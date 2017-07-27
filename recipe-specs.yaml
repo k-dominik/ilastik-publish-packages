@@ -1,0 +1,152 @@
+
+recipe-specs:
+
+    - name: lemon
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: clang-py3
+      recipe-subdir: lemon
+      
+      # Optional specs
+      environment: {}
+      no_test: false
+    
+    - name: vigra
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: clang-py3
+      recipe-subdir: vigra
+      environment:
+        VIGRA_SKIP_TESTS: 0
+      no_test: false
+    
+    - name: dpct
+      recipe-repo: https://github.com/chaubold/dpct
+      tag: master
+      recipe-subdir: conda-recipe
+    
+    - name: yapsy
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: clang-py3
+      recipe-subdir: yapsy
+
+    - name: hytra
+      recipe-repo: https://github.com/chaubold/hytra
+      tag: master
+      recipe-subdir: conda-recipe
+    
+    - name: iiboost
+      recipe-repo: https://github.com/stuarteberg/iiboost
+      tag: clang
+      recipe-subdir: conda-recipe
+        
+    - name: ilastik-feature-selection
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: clang-py3
+      recipe-subdir: ilastik-feature-selection
+
+    - name: ilastiktools
+      recipe-repo: https://github.com/ilastik/ilastiktools
+      tag: master
+      recipe-subdir: conda-recipe
+    
+    - name: ilastikrag
+      recipe-repo: https://github.com/stuarteberg/ilastikrag
+      tag: qt5-port
+      recipe-subdir: conda-recipe
+
+    - name: mamutexport
+      recipe-repo: https://github.com/Beinabih/MaMutConverter
+      tag: master
+      recipe-subdir: conda-recipe
+
+    - name: pytiff
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: clang-py3
+      recipe-subdir: pytiff
+    
+    # tifffile is available from conda-forge, but we need an old version of it...
+    - name: tifffile
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: clang-py3
+      recipe-subdir: tifffile
+
+    - name: wsdt
+      recipe-repo: https://github.com/ilastik/wsdt
+      tag: master
+      recipe-subdir: conda-recipe
+
+    - name: ilastik-meta
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: clang-py3
+      recipe-subdir: ilastik-meta
+    
+    - name: ilastik-launch
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: clang-py3
+      recipe-subdir: ilastik-launch
+    
+
+#
+# Need solvers for these packages
+#    
+#    - name: cplex-shared
+#      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+#      tag: clang-py3
+#      recipe-subdir: cplex-shared
+#      environment:
+#        CPLEX_ROOT_DIR: /Users/bergs/Applications/IBM/ILOG/CPLEX_Studio_Community127 
+#
+#    - name: gurobi-symlink
+#      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+#      tag: clang-py3
+#      recipe-subdir: gurobi-symlink
+#      environment:
+#        GUROBI_ROOT_DIR: /Library/gurobi702/mac64
+#
+#    - name: multi-hypotheses-tracking-with-gurobi
+#      recipe-repo: https://github.com/chaubold/multiHypothesesTracking
+#      tag: master
+#      recipe-subdir: conda-recipe
+#      environment:
+#        WITH_GUROBI: 1
+#        GUROBI_ROOT_DIR: /Library/gurobi702/mac64
+#    
+#    - name: multi-hypotheses-tracking-with-cplex
+#      recipe-repo: https://github.com/chaubold/multiHypothesesTracking
+#      tag: master
+#      recipe-subdir: conda-recipe
+#      environment:
+#        WITH_CPLEX: 1
+#        CPLEX_ROOT_DIR: /Users/bergs/Applications/IBM/ILOG/CPLEX_Studio_Community127 
+
+
+
+# FIXME: nifty build doesn't support python 3 yet, or clang...
+#    - name: nifty
+#      recipe-repo: https://github.com/DerThorsten/nifty
+#      tag: e330c2e # From 2017-04-07 (not sure if this works with python3)
+#      recipe-subdir: conda-recipe
+    
+# FIXME: nifty build doesn't support python 3 yet, or clang...
+#    - name: nifty-with-gurobi
+#      recipe-repo: https://github.com/DerThorsten/nifty
+#      tag: e330c2e # From 2017-04-07 (not sure if this works with python3)
+#      recipe-subdir: conda-recipe
+#      environment:
+#        WITH_GUROBI: 1
+#        GUROBI_ROOT_DIR: /Library/gurobi702/mac64
+
+# FIXME: nifty build doesn't support python 3 yet, or clang...
+#    - nifty-with-cplex
+#      recipe-repo: https://github.com/DerThorsten/nifty
+#      tag: e330c2e # From 2017-04-07 (not sure if this works with python3)
+#      recipe-subdir: conda-recipe
+#      environment:
+#        WITH_CPLEX: 1
+#        CPLEX_ROOT_DIR: /Users/bergs/Applications/IBM/ILOG/CPLEX_Studio_Community127 
+
+
+# FIXME: This is needed for certain tests.  Doesn't build with conda-build 3.0 yet
+#    - name: numpy-allocation-tracking
+#      recipe-repo: https://github.com/stuarteberg/numpy-allocation-tracking
+#      tag: master
+#      recipe-subdir: conda-recipe
