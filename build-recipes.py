@@ -1,5 +1,5 @@
 import os
-from os.path import basename, dirname, splitext, abspath, exists
+from os.path import basename, splitext, abspath, exists
 from pathlib import Path
 import sys
 import copy
@@ -35,30 +35,31 @@ def main():
     specs_file_contents = yaml.load(open(args.recipe_specs_path, 'r'))
     recipe_specs = specs_file_contents["recipe-specs"]
     for spec in recipe_specs:
-        render_and_build_recipe(spec)
+        build_and_upload_recipe(spec)
 
     print("--------")
     print("DONE")
     print("--------")
 
-def render_and_build_recipe(recipe_spec):
+def build_and_upload_recipe(recipe_spec):
     """
-    Given a list of recipe-spec dictionaries, build the recipes that don't already exist on ilastik-forge.
-    That is, for each recipe-spec:
-     1. Clone the recipe repo to our cache directory (if necessary)
-     2. Check out the tag (with submodules, if any)
-     3. Render the recipe's meta.yaml ('conda render')
-     4. Check the 'ilastik-forge' channel for the exact package.
-     5. If the package doesn't exist on ilastik-forge channel yet, build it and upload it.
+    Given a recipe-spec dictionary, build and upload the recipe if
+    it doesn't already exist on ilastik-forge.
+    
+    More specifically:
+      1. Clone the recipe repo to our cache directory (if necessary)
+      2. Check out the tag (with submodules, if any)
+      3. Render the recipe's meta.yaml ('conda render')
+      4. Query the 'ilastik-forge' channel for the exact package.
+      5. If the package doesn't exist on ilastik-forge channel yet, build it and upload it.
      
-     Note: A 'recipe-spec' is a dictionary with the following keys:
-     
-         - name -- The package name
-         - recipe-repo -- A URL to the git repo that contains the package recipe.
-         - recipe-subdir -- The name of the recipe directory within the git repo
-         - tag -- Which tag/branch/commit of the recipe-repo to use.
-         - environment (optional) -- Extra environment variables to define before building the recipe
-         - no-test (optional) -- If true, use 'conda build --no-test' when building the recipe
+    A recipe-spec is a dict with the following keys:
+      - name -- The package name
+      - recipe-repo -- A URL to the git repo that contains the package recipe.
+      - recipe-subdir -- The name of the recipe directory within the git repo
+      - tag -- Which tag/branch/commit of the recipe-repo to use.
+      - environment (optional) -- Extra environment variables to define before building the recipe
+      - no-test (optional) -- If true, use 'conda build --no-test' when building the recipe
     """
     # Extract spec fields
     package_name = recipe_spec['name']
@@ -90,13 +91,10 @@ def render_and_build_recipe(recipe_spec):
     print(f"Recipe version is: {package_name}-{recipe_version}-{recipe_build_string}")
 
     # Check our channel.  Did we already upload this version?
-    needs_build = check_needs_build(package_name, recipe_version, recipe_build_string)
-
-    if not needs_build:
+    if check_already_exists(package_name, recipe_version, recipe_build_string):
         print(f"Found {package_name}-{recipe_version}-{recipe_build_string} on {DESTINATION_CHANNEL}, skipping build.")
     else:
         # Not on our channel.  Build and upload.
-        print(f"Building {package_name}")
         build_recipe(package_name, recipe_subdir, test_flag, build_environment)
         upload_package(package_name, recipe_version, recipe_build_string)        
 
@@ -126,7 +124,7 @@ def checkout_recipe_repo(recipe_repo, tag):
 def get_rendered_version(package_name, recipe_subdir, build_environment):
     """
     Use 'conda render' to process a recipe's meta.yaml (processes jinja templates and selectors).
-    Returns the versiona dn build string from the rendered file.
+    Returns the version and build string from the rendered file.
     """
     print(f"Rendering recipe in {recipe_subdir}...")
     render_cmd = f"conda render --python={PYTHON_VERSION} --numpy={NUMPY_VERSION} {recipe_subdir}"
@@ -137,7 +135,7 @@ def get_rendered_version(package_name, recipe_subdir, build_environment):
     return meta['package']['version'], meta['build']['string']
 
 
-def check_needs_build(package_name, recipe_version, recipe_build_string):
+def check_already_exists(package_name, recipe_version, recipe_build_string):
     """
     Check if the given package already exists on anaconda.org in the
     ilastik-forge channel with the given version and build string.
@@ -148,19 +146,20 @@ def check_needs_build(package_name, recipe_version, recipe_build_string):
     search_results = json.loads(search_results_text)
 
     if package_name not in search_results:
-        return True
+        return False
 
     for result in search_results[package_name]:
         if result['build'] == recipe_build_string and result['version'] == recipe_version:
-            return False
+            return True
     
-    return True
+    return False
 
 
 def build_recipe(package_name, recipe_subdir, test_flag, build_environment):
     """
     Build the recipe.
     """
+    print(f"Building {package_name}")
     build_cmd = f"conda build {test_flag} --python={PYTHON_VERSION} --numpy={NUMPY_VERSION} {recipe_subdir}"
     print(build_cmd)
     try:
@@ -199,7 +198,8 @@ def mkdir_p(path):
 
 if __name__ == "__main__":
 #     import os
-#     os.chdir('/magnetic/workspace/ilastik-build-stack')
+#     from os.path import dirname
+#     os.chdir(dirname(__file__))
 #     sys.argv.append('recipe-specs.yaml')
 
     sys.exit( main() )
