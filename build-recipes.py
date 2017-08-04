@@ -18,6 +18,7 @@ CONDA_PLATFORM = { 'Darwin': 'osx-64',
 REPO_CACHE_DIR = Path(abspath('./repo-cache'))
 PYTHON_VERSION = '3.6'
 NUMPY_VERSION = '1.12'
+SOURCE_CHANNEL_STRING  = '-c conda-forge'
 DESTINATION_CHANNEL = 'ilastik-forge'
 
 # There's probably some proper way to obtain BUILD_PKG_DIR
@@ -127,7 +128,7 @@ def get_rendered_version(package_name, recipe_subdir, build_environment):
     Returns the version and build string from the rendered file.
     """
     print(f"Rendering recipe in {recipe_subdir}...")
-    render_cmd = f"conda render --python={PYTHON_VERSION} --numpy={NUMPY_VERSION} {recipe_subdir}"
+    render_cmd = f"conda render --python={PYTHON_VERSION} --numpy={NUMPY_VERSION} {recipe_subdir} {SOURCE_CHANNEL_STRING} --old-build-string"
     rendered_meta_text = subprocess.check_output(render_cmd, env=build_environment, shell=True).decode()
     meta = yaml.load(StringIO(rendered_meta_text))
     if meta['package']['name'] != package_name:
@@ -160,8 +161,8 @@ def build_recipe(package_name, recipe_subdir, test_flag, build_environment):
     Build the recipe.
     """
     print(f"Building {package_name}")
-    build_cmd = f"conda build {test_flag} --python={PYTHON_VERSION} --numpy={NUMPY_VERSION} {recipe_subdir}"
     print(build_cmd)
+    build_cmd = f"conda build {test_flag} --python={PYTHON_VERSION} --numpy={NUMPY_VERSION} {recipe_subdir} {SOURCE_CHANNEL_STRING} --old-build-string"
     try:
         subprocess.check_call(build_cmd, env=build_environment, shell=True)
     except subprocess.CalledProcessError as ex:
