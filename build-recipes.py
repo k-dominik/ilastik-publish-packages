@@ -115,7 +115,7 @@ def checkout_recipe_repo(recipe_repo, tag):
         os.chdir(repo_name)
         subprocess.check_call(f"git fetch", shell=True)
 
-    print(f"Checking out {tag}...")
+    print(f"Checking out {tag} of {repo_name} into {cwd}...")
     subprocess.check_call(f"git checkout {tag}", shell=True)
     subprocess.check_call(f"git submodule update --init --recursive", shell=True)
     os.chdir(cwd)
@@ -129,6 +129,7 @@ def get_rendered_version(package_name, recipe_subdir, build_environment):
     """
     print(f"Rendering recipe in {recipe_subdir}...")
     render_cmd = f"conda render --python={PYTHON_VERSION} --numpy={NUMPY_VERSION} {recipe_subdir} {SOURCE_CHANNEL_STRING} --old-build-string"
+    print('\t' + render_cmd)
     rendered_meta_text = subprocess.check_output(render_cmd, env=build_environment, shell=True).decode()
     meta = yaml.load(StringIO(rendered_meta_text))
     if meta['package']['name'] != package_name:
@@ -143,11 +144,14 @@ def check_already_exists(package_name, recipe_version, recipe_build_string):
     """
     print(f"Searching channel: {DESTINATION_CHANNEL}")
     search_cmd = f"conda search --json  --full-name --override-channels --channel={DESTINATION_CHANNEL} {package_name}"  
+    print('\t' + search_cmd)
     search_results_text = subprocess.check_output( search_cmd, shell=True ).decode()
     search_results = json.loads(search_results_text)
 
     if package_name not in search_results:
         return False
+
+    print("Found package!")
 
     for result in search_results[package_name]:
         if result['build'] == recipe_build_string and result['version'] == recipe_version:
@@ -161,8 +165,8 @@ def build_recipe(package_name, recipe_subdir, test_flag, build_environment):
     Build the recipe.
     """
     print(f"Building {package_name}")
-    print(build_cmd)
     build_cmd = f"conda build {test_flag} --python={PYTHON_VERSION} --numpy={NUMPY_VERSION} {recipe_subdir} {SOURCE_CHANNEL_STRING} --old-build-string"
+    print('\t' + build_cmd)
     try:
         subprocess.check_call(build_cmd, env=build_environment, shell=True)
     except subprocess.CalledProcessError as ex:
