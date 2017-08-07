@@ -134,7 +134,14 @@ def get_rendered_version(package_name, recipe_subdir, build_environment):
     meta = yaml.load(StringIO(rendered_meta_text))
     if meta['package']['name'] != package_name:
         raise RuntimeError("Recipe for package '{package_name}' has unexpected name: '{meta['package']['name']}'")
-    return meta['package']['version'], meta['build']['string']
+    #import pprint
+    #pprint.pprint(meta)
+    
+    render_cmd += " --output"
+    rendered_filename = subprocess.check_output(render_cmd, env=build_environment, shell=True).decode()
+    build_string_with_hash = rendered_filename.split('-')[-1].split('.')[0]
+
+    return meta['package']['version'], build_string_with_hash
 
 
 def check_already_exists(package_name, recipe_version, recipe_build_string):
