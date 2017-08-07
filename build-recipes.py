@@ -61,16 +61,17 @@ def build_and_upload_recipe(recipe_spec):
       - tag -- Which tag/branch/commit of the recipe-repo to use.
       - environment (optional) -- Extra environment variables to define before building the recipe
       - no-test (optional) -- If true, use 'conda build --no-test' when building the recipe
+      - conda-build-flag (optional) -- Extra arguments to pass to conda build for this package
     """
     # Extract spec fields
     package_name = recipe_spec['name']
     recipe_repo = recipe_spec['recipe-repo']
     tag = recipe_spec['tag']
     recipe_subdir = recipe_spec['recipe-subdir']
+    conda_build_flags = recipe_spec['conda-build-flags'] or ''
     
-    test_flag = ''
     if 'no-test' in recipe_spec and recipe_spec['no-test']:
-        test_flag = '--no-test'
+        conda_build_flags += ' --no-test'
     
     build_environment = dict(**os.environ)
     if 'environment' in recipe_spec:
@@ -96,7 +97,7 @@ def build_and_upload_recipe(recipe_spec):
         print(f"Found {package_name}-{recipe_version}-{recipe_build_string} on {DESTINATION_CHANNEL}, skipping build.")
     else:
         # Not on our channel.  Build and upload.
-        build_recipe(package_name, recipe_subdir, test_flag, build_environment)
+        build_recipe(package_name, recipe_subdir, conda_build_flags, build_environment)
         upload_package(package_name, recipe_version, recipe_build_string)        
 
 
@@ -167,12 +168,12 @@ def check_already_exists(package_name, recipe_version, recipe_build_string):
     return False
 
 
-def build_recipe(package_name, recipe_subdir, test_flag, build_environment):
+def build_recipe(package_name, recipe_subdir, build_flags, build_environment):
     """
     Build the recipe.
     """
     print(f"Building {package_name}")
-    build_cmd = f"conda build {test_flag} --python={PYTHON_VERSION} --numpy={NUMPY_VERSION} {recipe_subdir} {SOURCE_CHANNEL_STRING}"
+    build_cmd = f"conda build {build_flag} --python={PYTHON_VERSION} --numpy={NUMPY_VERSION} {recipe_subdir} {SOURCE_CHANNEL_STRING}"
     print('\t' + build_cmd)
     try:
         subprocess.check_call(build_cmd, env=build_environment, shell=True)
