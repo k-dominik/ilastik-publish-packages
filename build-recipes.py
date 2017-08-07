@@ -153,18 +153,20 @@ def check_already_exists(package_name, recipe_version, recipe_build_string):
     print(f"Searching channel: {DESTINATION_CHANNEL}")
     search_cmd = f"conda search --json  --full-name --override-channels --channel={DESTINATION_CHANNEL} {package_name}"  
     print('\t' + search_cmd)
-    search_results_text = subprocess.check_output( search_cmd, shell=True ).decode()
-    search_results = json.loads(search_results_text)
+    try:
+        search_results_text = subprocess.check_output( search_cmd, shell=True ).decode()
+        search_results = json.loads(search_results_text)
 
-    if package_name not in search_results:
-        return False
+        if package_name not in search_results:
+            return False
 
-    print("Found package!")
+        print("Found package!")
 
-    for result in search_results[package_name]:
-        if result['build'] == recipe_build_string and result['version'] == recipe_version:
-            return True
-    
+        for result in search_results[package_name]:
+            if result['build'] == recipe_build_string and result['version'] == recipe_version:
+                return True
+    except:
+        pass 
     return False
 
 
