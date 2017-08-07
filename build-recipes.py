@@ -68,7 +68,7 @@ def build_and_upload_recipe(recipe_spec):
     recipe_repo = recipe_spec['recipe-repo']
     tag = recipe_spec['tag']
     recipe_subdir = recipe_spec['recipe-subdir']
-    conda_build_flags = recipe_spec['conda-build-flags'] or ''
+    conda_build_flags = recipe_spec.get('conda-build-flags', '')
     
     if 'no-test' in recipe_spec and recipe_spec['no-test']:
         conda_build_flags += ' --no-test'
@@ -173,7 +173,7 @@ def build_recipe(package_name, recipe_subdir, build_flags, build_environment):
     Build the recipe.
     """
     print(f"Building {package_name}")
-    build_cmd = f"conda build {build_flag} --python={PYTHON_VERSION} --numpy={NUMPY_VERSION} {recipe_subdir} {SOURCE_CHANNEL_STRING}"
+    build_cmd = f"conda build {build_flags} --python={PYTHON_VERSION} --numpy={NUMPY_VERSION} {recipe_subdir} {SOURCE_CHANNEL_STRING}"
     print('\t' + build_cmd)
     try:
         subprocess.check_call(build_cmd, env=build_environment, shell=True)

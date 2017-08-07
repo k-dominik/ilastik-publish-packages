@@ -8,7 +8,7 @@ recipe-specs:
       
       # Optional specs
       environment: {}
-      no_test: false
+      no-test: false
     
     - name: vigra
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
@@ -16,7 +16,7 @@ recipe-specs:
       recipe-subdir: vigra
       environment:
         VIGRA_SKIP_TESTS: 0
-      no_test: false
+      no-test: false
     
     - name: dpct
       recipe-repo: https://github.com/chaubold/dpct
@@ -42,7 +42,8 @@ recipe-specs:
       recipe-repo: https://github.com/ilastik/ilastik-feature-selection
       tag: master
       recipe-subdir: conda-recipe
-      no_test: false
+      no-test: true
+      conda-build-flags: --no-remove-work-dir
 
     - name: ilastiktools
       recipe-repo: https://github.com/ilastik/ilastiktools
@@ -51,7 +52,7 @@ recipe-specs:
     
     - name: ilastikrag
       recipe-repo: https://github.com/stuarteberg/ilastikrag
-      tag: qt5-port
+      tag: master 
       recipe-subdir: conda-recipe
 
     - name: mamutexport
@@ -69,6 +70,11 @@ recipe-specs:
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
       tag: clang-py3
       recipe-subdir: tifffile
+
+    - name: numpy-allocation-tracking
+      recipe-repo: https://github.com/ilastik/numpy-allocation-tracking
+      tag: master
+      recipe-subdir: conda-recipe
 
     - name: wsdt
       recipe-repo: https://github.com/ilastik/wsdt
@@ -145,9 +151,3 @@ recipe-specs:
 #        WITH_CPLEX: 1
 #        CPLEX_ROOT_DIR: /Users/bergs/Applications/IBM/ILOG/CPLEX_Studio_Community127 
 
-
-# FIXME: This is needed for certain tests.  Doesn't build with conda-build 3.0 yet
-#    - name: numpy-allocation-tracking
-#      recipe-repo: https://github.com/stuarteberg/numpy-allocation-tracking
-#      tag: master
-#      recipe-subdir: conda-recipe
