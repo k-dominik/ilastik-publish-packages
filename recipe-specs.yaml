@@ -39,9 +39,10 @@ recipe-specs:
       recipe-subdir: conda-recipe
         
     - name: ilastik-feature-selection
-      recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: clang-py3
-      recipe-subdir: ilastik-feature-selection
+      recipe-repo: https://github.com/ilastik/ilastik-feature-selection
+      tag: master
+      recipe-subdir: conda-recipe
+      no_test: false
 
     - name: ilastiktools
       recipe-repo: https://github.com/ilastik/ilastiktools
