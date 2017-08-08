@@ -8,7 +8,7 @@ recipe-specs:
       
       # Optional specs
       environment: {}
-      no_test: false
+      no-test: false
 
     # FIXME: We would like to use conda-forge's package for vigra,
     # but it doesn't build WITH_LEMON yet.
@@ -18,7 +18,7 @@ recipe-specs:
       recipe-subdir: vigra
       environment:
         VIGRA_SKIP_TESTS: 0
-      no_test: false
+      no-test: false
     
     - name: dpct
       recipe-repo: https://github.com/chaubold/dpct
@@ -41,9 +41,11 @@ recipe-specs:
       recipe-subdir: conda-recipe
         
     - name: ilastik-feature-selection
-      recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: clang-py3
-      recipe-subdir: ilastik-feature-selection
+      recipe-repo: https://github.com/ilastik/ilastik-feature-selection
+      tag: master
+      recipe-subdir: conda-recipe
+      no-test: true
+      conda-build-flags: --no-remove-work-dir
 
     - name: ilastiktools
       recipe-repo: https://github.com/ilastik/ilastiktools
@@ -52,7 +54,7 @@ recipe-specs:
     
     - name: ilastikrag
       recipe-repo: https://github.com/stuarteberg/ilastikrag
-      tag: qt5-port
+      tag: master 
       recipe-subdir: conda-recipe
 
     - name: mamutexport
@@ -71,13 +73,13 @@ recipe-specs:
       tag: clang-py3
       recipe-subdir: tifffile
 
-    - name: wsdt
-      recipe-repo: https://github.com/ilastik/wsdt
+    - name: numpy-allocation-tracking
+      recipe-repo: https://github.com/ilastik/numpy-allocation-tracking
       tag: master
       recipe-subdir: conda-recipe
 
-    - name: numpy-allocation-tracking
-      recipe-repo: https://github.com/stuarteberg/numpy-allocation-tracking
+    - name: wsdt
+      recipe-repo: https://github.com/ilastik/wsdt
       tag: master
       recipe-subdir: conda-recipe
 
@@ -150,5 +152,4 @@ recipe-specs:
 #      environment:
 #        WITH_CPLEX: 1
 #        CPLEX_ROOT_DIR: /Users/bergs/Applications/IBM/ILOG/CPLEX_Studio_Community127 
-
 

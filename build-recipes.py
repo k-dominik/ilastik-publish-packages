@@ -7,7 +7,7 @@ import argparse
 import subprocess
 import platform
 import json
-from io import StringIO
+import tempfile
 
 import yaml
 
@@ -18,6 +18,7 @@ CONDA_PLATFORM = { 'Darwin': 'osx-64',
 REPO_CACHE_DIR = Path(abspath('./repo-cache'))
 PYTHON_VERSION = '3.6'
 NUMPY_VERSION = '1.12'
+SOURCE_CHANNEL_STRING  = '-c conda-forge'
 DESTINATION_CHANNEL = 'ilastik-forge'
 
 # There's probably some proper way to obtain BUILD_PKG_DIR
@@ -60,16 +61,17 @@ def build_and_upload_recipe(recipe_spec):
       - tag -- Which tag/branch/commit of the recipe-repo to use.
       - environment (optional) -- Extra environment variables to define before building the recipe
       - no-test (optional) -- If true, use 'conda build --no-test' when building the recipe
+      - conda-build-flag (optional) -- Extra arguments to pass to conda build for this package
     """
     # Extract spec fields
     package_name = recipe_spec['name']
     recipe_repo = recipe_spec['recipe-repo']
     tag = recipe_spec['tag']
     recipe_subdir = recipe_spec['recipe-subdir']
+    conda_build_flags = recipe_spec.get('conda-build-flags', '')
     
-    test_flag = ''
     if 'no-test' in recipe_spec and recipe_spec['no-test']:
-        test_flag = '--no-test'
+        conda_build_flags += ' --no-test'
     
     build_environment = dict(**os.environ)
     if 'environment' in recipe_spec:
@@ -95,7 +97,7 @@ def build_and_upload_recipe(recipe_spec):
         print(f"Found {package_name}-{recipe_version}-{recipe_build_string} on {DESTINATION_CHANNEL}, skipping build.")
     else:
         # Not on our channel.  Build and upload.
-        build_recipe(package_name, recipe_subdir, test_flag, build_environment)
+        build_recipe(package_name, recipe_subdir, conda_build_flags, build_environment)
         upload_package(package_name, recipe_version, recipe_build_string)        
 
 
@@ -114,8 +116,9 @@ def checkout_recipe_repo(recipe_repo, tag):
         os.chdir(repo_name)
         subprocess.check_call(f"git fetch", shell=True)
 
-    print(f"Checking out {tag}...")
+    print(f"Checking out {tag} of {repo_name} into {cwd}...")
     subprocess.check_call(f"git checkout {tag}", shell=True)
+    subprocess.check_call("git pull", shell=True)
     subprocess.check_call(f"git submodule update --init --recursive", shell=True)
     os.chdir(cwd)
 
@@ -127,12 +130,24 @@ def get_rendered_version(package_name, recipe_subdir, build_environment):
     Returns the version and build string from the rendered file.
     """
     print(f"Rendering recipe in {recipe_subdir}...")
-    render_cmd = f"conda render --python={PYTHON_VERSION} --numpy={NUMPY_VERSION} {recipe_subdir}"
+    temp_meta_file = tempfile.NamedTemporaryFile(delete=False)
+    temp_meta_file.close()
+    render_cmd = f"conda render --python={PYTHON_VERSION} --numpy={NUMPY_VERSION} {recipe_subdir} {SOURCE_CHANNEL_STRING} --file {temp_meta_file.name}"
+    print('\t' + render_cmd)
     rendered_meta_text = subprocess.check_output(render_cmd, env=build_environment, shell=True).decode()
-    meta = yaml.load(StringIO(rendered_meta_text))
+    meta = yaml.load(open(temp_meta_file.name, 'r'))
+    os.remove(temp_meta_file.name)
+
     if meta['package']['name'] != package_name:
         raise RuntimeError("Recipe for package '{package_name}' has unexpected name: '{meta['package']['name']}'")
-    return meta['package']['version'], meta['build']['string']
+    #import pprint
+    #pprint.pprint(meta)
+    
+    render_cmd += " --output"
+    rendered_filename = subprocess.check_output(render_cmd, env=build_environment, shell=True).decode()
+    build_string_with_hash = rendered_filename.split('-')[-1].split('.')[0]
+
+    return meta['package']['version'], build_string_with_hash
 
 
 def check_already_exists(package_name, recipe_version, recipe_build_string):
@@ -142,26 +157,31 @@ def check_already_exists(package_name, recipe_version, recipe_build_string):
     """
     print(f"Searching channel: {DESTINATION_CHANNEL}")
     search_cmd = f"conda search --json  --full-name --override-channels --channel={DESTINATION_CHANNEL} {package_name}"  
-    search_results_text = subprocess.check_output( search_cmd, shell=True ).decode()
-    search_results = json.loads(search_results_text)
+    print('\t' + search_cmd)
+    try:
+        search_results_text = subprocess.check_output( search_cmd, shell=True ).decode()
+        search_results = json.loads(search_results_text)
 
-    if package_name not in search_results:
-        return False
+        if package_name not in search_results:
+            return False
 
-    for result in search_results[package_name]:
-        if result['build'] == recipe_build_string and result['version'] == recipe_version:
-            return True
-    
+        print("Found package!")
+
+        for result in search_results[package_name]:
+            if result['build'] == recipe_build_string and result['version'] == recipe_version:
+                return True
+    except:
+        pass 
     return False
 
 
-def build_recipe(package_name, recipe_subdir, test_flag, build_environment):
+def build_recipe(package_name, recipe_subdir, build_flags, build_environment):
     """
     Build the recipe.
     """
     print(f"Building {package_name}")
-    build_cmd = f"conda build {test_flag} --python={PYTHON_VERSION} --numpy={NUMPY_VERSION} {recipe_subdir}"
-    print(build_cmd)
+    build_cmd = f"conda build {build_flags} --python={PYTHON_VERSION} --numpy={NUMPY_VERSION} {recipe_subdir} {SOURCE_CHANNEL_STRING}"
+    print('\t' + build_cmd)
     try:
         subprocess.check_call(build_cmd, env=build_environment, shell=True)
     except subprocess.CalledProcessError as ex:
