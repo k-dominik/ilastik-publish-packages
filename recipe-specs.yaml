@@ -9,7 +9,9 @@ recipe-specs:
       # Optional specs
       environment: {}
       no_test: false
-    
+
+    # FIXME: We would like to use conda-forge's package for vigra,
+    # but it doesn't build WITH_LEMON yet.
     - name: vigra
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
       tag: clang-py3
@@ -71,6 +73,11 @@ recipe-specs:
 
     - name: wsdt
       recipe-repo: https://github.com/ilastik/wsdt
+      tag: master
+      recipe-subdir: conda-recipe
+
+    - name: numpy-allocation-tracking
+      recipe-repo: https://github.com/stuarteberg/numpy-allocation-tracking
       tag: master
       recipe-subdir: conda-recipe
 
@@ -145,8 +152,3 @@ recipe-specs:
 #        CPLEX_ROOT_DIR: /Users/bergs/Applications/IBM/ILOG/CPLEX_Studio_Community127 
 
 
-# FIXME: This is needed for certain tests.  Doesn't build with conda-build 3.0 yet
-#    - name: numpy-allocation-tracking
-#      recipe-repo: https://github.com/stuarteberg/numpy-allocation-tracking
-#      tag: master
-#      recipe-subdir: conda-recipe
