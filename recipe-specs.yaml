@@ -9,7 +9,9 @@ recipe-specs:
       # Optional specs
       environment: {}
       no-test: false
-    
+
+    # FIXME: We would like to use conda-forge's package for vigra,
+    # but it doesn't build WITH_LEMON yet.
     - name: vigra
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
       tag: clang-py3
