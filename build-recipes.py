@@ -7,7 +7,7 @@ import argparse
 import subprocess
 import platform
 import json
-from io import StringIO
+import tempfile
 
 import yaml
 
@@ -118,7 +118,7 @@ def checkout_recipe_repo(recipe_repo, tag):
 
     print(f"Checking out {tag} of {repo_name} into {cwd}...")
     subprocess.check_call(f"git checkout {tag}", shell=True)
-    subprocess.check_call(f"git pull", shell=True)
+    subprocess.check_call("git pull", shell=True)
     subprocess.check_call(f"git submodule update --init --recursive", shell=True)
     os.chdir(cwd)
 
@@ -130,10 +130,14 @@ def get_rendered_version(package_name, recipe_subdir, build_environment):
     Returns the version and build string from the rendered file.
     """
     print(f"Rendering recipe in {recipe_subdir}...")
-    render_cmd = f"conda render --python={PYTHON_VERSION} --numpy={NUMPY_VERSION} {recipe_subdir} {SOURCE_CHANNEL_STRING}"
+    temp_meta_file = tempfile.NamedTemporaryFile(delete=False)
+    temp_meta_file.close()
+    render_cmd = f"conda render --python={PYTHON_VERSION} --numpy={NUMPY_VERSION} {recipe_subdir} {SOURCE_CHANNEL_STRING} --file {temp_meta_file.name}"
     print('\t' + render_cmd)
     rendered_meta_text = subprocess.check_output(render_cmd, env=build_environment, shell=True).decode()
-    meta = yaml.load(StringIO(rendered_meta_text))
+    meta = yaml.load(open(temp_meta_file.name, 'r'))
+    os.remove(temp_meta_file.name)
+
     if meta['package']['name'] != package_name:
         raise RuntimeError("Recipe for package '{package_name}' has unexpected name: '{meta['package']['name']}'")
     #import pprint
