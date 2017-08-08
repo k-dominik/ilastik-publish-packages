@@ -118,6 +118,7 @@ def checkout_recipe_repo(recipe_repo, tag):
 
     print(f"Checking out {tag} of {repo_name} into {cwd}...")
     subprocess.check_call(f"git checkout {tag}", shell=True)
+    subprocess.check_call(f"git pull", shell=True)
     subprocess.check_call(f"git submodule update --init --recursive", shell=True)
     os.chdir(cwd)
 
