@@ -93,6 +93,10 @@ recipe-specs:
       tag: clang-py3
       recipe-subdir: ilastik-launch
     
+    - name: fastfilters
+      recipe-repo: https://github.com/ilastik/fastfilters
+      tag: ilastik
+      recipe-subdir: pkg/conda/fastfilters
 
 #
 # Need solvers for these packages
