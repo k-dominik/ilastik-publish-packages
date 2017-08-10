@@ -76,7 +76,7 @@ def build_and_upload_recipe(recipe_spec):
     build_environment = dict(**os.environ)
     if 'environment' in recipe_spec:
         for key in recipe_spec['environment'].keys():
-            recipe_spec['environment'][key] = str(recipe_spec['environment'])
+            recipe_spec['environment'][key] = str(recipe_spec['environment'][key])
         build_environment.update(recipe_spec['environment'])
 
     print("-------------------------------------------")        
