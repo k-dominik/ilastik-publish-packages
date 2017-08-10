@@ -97,12 +97,18 @@ recipe-specs:
 #
 # Need solvers for these packages
 #    
-#    - name: cplex-shared
-#      recipe-repo: https://github.com/ilastik/ilastik-build-conda
-#      tag: clang-py3
-#      recipe-subdir: cplex-shared
-#      environment:
-#        CPLEX_ROOT_DIR: /Users/bergs/Applications/IBM/ILOG/CPLEX_Studio_Community127 
+    - name: opengm-structured-learning-headers
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: clang-py3
+      recipe-subdir: opengm-structured-learning-headers
+
+    - name: cplex-shared
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: clang-py3
+      recipe-subdir: cplex-shared
+      environment:
+        CPLEX_ROOT_DIR: /opt/cplex 
+
 #
 #    - name: gurobi-symlink
 #      recipe-repo: https://github.com/ilastik/ilastik-build-conda
@@ -119,15 +125,15 @@ recipe-specs:
 #        WITH_GUROBI: 1
 #        GUROBI_ROOT_DIR: /Library/gurobi702/mac64
 #    
-#    - name: multi-hypotheses-tracking-with-cplex
-#      recipe-repo: https://github.com/chaubold/multiHypothesesTracking
-#      tag: master
-#      recipe-subdir: conda-recipe
-#      environment:
-#        WITH_CPLEX: 1
-#        CPLEX_ROOT_DIR: /Users/bergs/Applications/IBM/ILOG/CPLEX_Studio_Community127 
-
-
+    - name: multi-hypotheses-tracking-with-cplex
+      recipe-repo: https://github.com/chaubold/multiHypothesesTracking
+      tag: master
+      recipe-subdir: conda-recipe
+      environment:
+        WITH_CPLEX: 1
+        WITH_GUROBI: 0
+        CPLEX_ROOT_DIR: /opt/cplex
+ 
 
 # FIXME: nifty build doesn't support python 3 yet, or clang...
 #    - name: nifty
