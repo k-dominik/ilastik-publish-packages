@@ -1,87 +1,87 @@
 
 recipe-specs:
 
-   - name: lemon
-     recipe-repo: https://github.com/ilastik/ilastik-build-conda
-     tag: clang-py3
-     recipe-subdir: lemon
-     
-     # Optional specs
-     environment: {}
-     no-test: false
-
-   # FIXME: We would like to use conda-forge's package for vigra,
-   # but it doesn't build WITH_LEMON yet.
-   - name: vigra
-     recipe-repo: https://github.com/ilastik/ilastik-build-conda
-     tag: clang-py3
-     recipe-subdir: vigra
-     environment:
-       VIGRA_SKIP_TESTS: 0
-     no-test: false
-   
-   - name: dpct
-     recipe-repo: https://github.com/chaubold/dpct
-     tag: master
-     recipe-subdir: conda-recipe
-   
-   - name: yapsy
-     recipe-repo: https://github.com/ilastik/ilastik-build-conda
-     tag: clang-py3
-     recipe-subdir: yapsy
-
-   - name: hytra
-     recipe-repo: https://github.com/chaubold/hytra
-     tag: master
-     recipe-subdir: conda-recipe
-   
-   - name: iiboost
-     recipe-repo: https://github.com/stuarteberg/iiboost
-     tag: clang
-     recipe-subdir: conda-recipe
-       
-   - name: ilastik-feature-selection
-     recipe-repo: https://github.com/ilastik/ilastik-feature-selection
-     tag: master
-     recipe-subdir: conda-recipe
-     no-test: true
-     conda-build-flags: --no-remove-work-dir
-
-   - name: ilastiktools
-     recipe-repo: https://github.com/ilastik/ilastiktools
-     tag: master
-     recipe-subdir: conda-recipe
-   
-   - name: ilastikrag
-     recipe-repo: https://github.com/stuarteberg/ilastikrag
-     tag: master 
-     recipe-subdir: conda-recipe
-
-   - name: mamutexport
-     recipe-repo: https://github.com/Beinabih/MaMutConverter
-     tag: master
-     recipe-subdir: conda-recipe
-
-   - name: pytiff
-     recipe-repo: https://github.com/ilastik/ilastik-build-conda
-     tag: clang-py3
-     recipe-subdir: pytiff
-   
-   # tifffile is available from conda-forge, but we need an old version of it...
-   - name: tifffile
-     recipe-repo: https://github.com/ilastik/ilastik-build-conda
-     tag: clang-py3
-     recipe-subdir: tifffile
-
-   - name: numpy-allocation-tracking
-     recipe-repo: https://github.com/ilastik/numpy-allocation-tracking
-     tag: master
-     recipe-subdir: conda-recipe
-
-   - name: wsdt
-     recipe-repo: https://github.com/ilastik/wsdt
-     tag: master
-     recipe-subdir: conda-recipe
+    - name: lemon
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: clang-py3
+      recipe-subdir: lemon
+      
+      # Optional specs
+      environment: {}
+      no-test: false
+ 
+    # FIXME: We would like to use conda-forge's package for vigra,
+    # but it doesn't build WITH_LEMON yet.
+    - name: vigra
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: clang-py3
+      recipe-subdir: vigra
+      environment:
+        VIGRA_SKIP_TESTS: 0
+      no-test: false
+    
+    - name: dpct
+      recipe-repo: https://github.com/chaubold/dpct
+      tag: master
+      recipe-subdir: conda-recipe
+    
+    - name: yapsy
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: clang-py3
+      recipe-subdir: yapsy
+ 
+    - name: hytra
+      recipe-repo: https://github.com/chaubold/hytra
+      tag: master
+      recipe-subdir: conda-recipe
+    
+    - name: iiboost
+      recipe-repo: https://github.com/stuarteberg/iiboost
+      tag: clang
+      recipe-subdir: conda-recipe
+        
+    - name: ilastik-feature-selection
+      recipe-repo: https://github.com/ilastik/ilastik-feature-selection
+      tag: master
+      recipe-subdir: conda-recipe
+      no-test: true
+      conda-build-flags: --no-remove-work-dir
+ 
+    - name: ilastiktools
+      recipe-repo: https://github.com/ilastik/ilastiktools
+      tag: master
+      recipe-subdir: conda-recipe
+    
+    - name: ilastikrag
+      recipe-repo: https://github.com/stuarteberg/ilastikrag
+      tag: master 
+      recipe-subdir: conda-recipe
+ 
+    - name: mamutexport
+      recipe-repo: https://github.com/Beinabih/MaMutConverter
+      tag: master
+      recipe-subdir: conda-recipe
+ 
+    - name: pytiff
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: clang-py3
+      recipe-subdir: pytiff
+    
+    # tifffile is available from conda-forge, but we need an old version of it...
+    - name: tifffile
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: clang-py3
+      recipe-subdir: tifffile
+ 
+    - name: numpy-allocation-tracking
+      recipe-repo: https://github.com/ilastik/numpy-allocation-tracking
+      tag: master
+      recipe-subdir: conda-recipe
+ 
+    - name: wsdt
+      recipe-repo: https://github.com/ilastik/wsdt
+      tag: master
+      recipe-subdir: conda-recipe
 
     - name: ilastik-meta
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
