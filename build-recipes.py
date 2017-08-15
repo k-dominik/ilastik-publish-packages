@@ -18,7 +18,7 @@ CONDA_PLATFORM = { 'Darwin': 'osx-64',
 REPO_CACHE_DIR = Path(abspath('./repo-cache'))
 PYTHON_VERSION = '3.6'
 NUMPY_VERSION = '1.12'
-SOURCE_CHANNEL_STRING  = '-c conda-forge'
+SOURCE_CHANNEL_STRING  = '-c ilastik-forge -c conda-forge'
 DESTINATION_CHANNEL = 'ilastik-forge'
 
 # There's probably some proper way to obtain BUILD_PKG_DIR
