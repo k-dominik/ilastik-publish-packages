@@ -3,7 +3,7 @@ recipe-specs:
 
     - name: lemon
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: clang-py3
+      tag: master
       recipe-subdir: lemon
       
       # Optional specs
@@ -14,7 +14,7 @@ recipe-specs:
     # but it doesn't build WITH_LEMON yet.
     - name: vigra
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: clang-py3
+      tag: master
       recipe-subdir: vigra
       environment:
         VIGRA_SKIP_TESTS: 0
@@ -27,7 +27,7 @@ recipe-specs:
     
     - name: yapsy
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: clang-py3
+      tag: master
       recipe-subdir: yapsy
  
     - name: hytra
@@ -64,13 +64,13 @@ recipe-specs:
  
     - name: pytiff
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: clang-py3
+      tag: master
       recipe-subdir: pytiff
     
     # tifffile is available from conda-forge, but we need an old version of it...
     - name: tifffile
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: clang-py3
+      tag: master
       recipe-subdir: tifffile
  
     - name: numpy-allocation-tracking
@@ -83,32 +83,29 @@ recipe-specs:
       tag: master
       recipe-subdir: conda-recipe
 
-    - name: ilastik-meta
-      recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: clang-py3
-      recipe-subdir: ilastik-meta
-    
-    - name: ilastik-launch
-      recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: clang-py3
-      recipe-subdir: ilastik-launch
+
+#    - name: qimage2ndarray
+#      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+#      tag: master
+#      recipe-subdir: qimage2ndarray
+
     
     - name: fastfilters
       recipe-repo: https://github.com/ilastik/fastfilters
       tag: ilastik
       recipe-subdir: pkg/conda/fastfilters
 
-#
-# Need solvers for these packages
-#    
+##
+## Need solvers for these packages
+##    
     - name: opengm-structured-learning-headers
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: clang-py3
+      tag: master
       recipe-subdir: opengm-structured-learning-headers
 
     - name: cplex-shared
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: clang-py3
+      tag: master
       recipe-subdir: cplex-shared
       environment:
         CPLEX_ROOT_DIR: /opt/cplex 
@@ -116,7 +113,7 @@ recipe-specs:
 
     - name: gurobi-symlink
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: clang-py3
+      tag: master
       recipe-subdir: gurobi-symlink
       environment:
         GUROBI_ROOT_DIR: /opt/gurobi751/linux64
@@ -165,3 +162,26 @@ recipe-specs:
 #        WITH_CPLEX: 1
 #        CPLEX_ROOT_DIR: /Users/bergs/Applications/IBM/ILOG/CPLEX_Studio_Community127 
 
+    - name: ilastik-dependencies-no-solvers
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: master
+      recipe-subdir: ilastik-dependencies
+      environment:
+        WITH_SOLVERS: 0    
+
+    - name: ilastik-dependencies
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: master
+      recipe-subdir: ilastik-dependencies
+      environment:
+        WITH_SOLVERS: 1    
+
+#    - name: ilastik-meta
+#      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+#      tag: master
+#      recipe-subdir: ilastik-meta
+#    
+#    - name: ilastik-launch
+#      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+#      tag: master
+#      recipe-subdir: ilastik-launch
