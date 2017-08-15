@@ -140,8 +140,6 @@ def get_rendered_version(package_name, recipe_subdir, build_environment):
 
     if meta['package']['name'] != package_name:
         raise RuntimeError("Recipe for package '{package_name}' has unexpected name: '{meta['package']['name']}'")
-    #import pprint
-    #pprint.pprint(meta)
     
     render_cmd += " --output"
     rendered_filename = subprocess.check_output(render_cmd, env=build_environment, shell=True).decode()
@@ -160,18 +158,21 @@ def check_already_exists(package_name, recipe_version, recipe_build_string):
     print('\t' + search_cmd)
     try:
         search_results_text = subprocess.check_output( search_cmd, shell=True ).decode()
-        search_results = json.loads(search_results_text)
+    except Exception:
+        # In certain scenarios, the search can crash.
+        # In such cases, the package wasn't there anyway, so return False
+        return False
+    
+    search_results = json.loads(search_results_text)
 
-        if package_name not in search_results:
-            return False
+    if package_name not in search_results:
+        return False
 
-        print("Found package!")
+    print("Found package!")
 
-        for result in search_results[package_name]:
-            if result['build'] == recipe_build_string and result['version'] == recipe_version:
-                return True
-    except:
-        pass 
+    for result in search_results[package_name]:
+        if result['build'] == recipe_build_string and result['version'] == recipe_version:
+            return True
     return False
 
 
