@@ -21,7 +21,7 @@ recipe-specs:
       no-test: false
     
     - name: dpct
-      recipe-repo: https://github.com/chaubold/dpct
+      recipe-repo: https://github.com/ilastik/dpct
       tag: master
       recipe-subdir: conda-recipe
     
@@ -31,7 +31,7 @@ recipe-specs:
       recipe-subdir: yapsy
  
     - name: hytra
-      recipe-repo: https://github.com/chaubold/hytra
+      recipe-repo: https://github.com/ilastik/hytra
       tag: master
       recipe-subdir: conda-recipe
     
@@ -119,7 +119,7 @@ recipe-specs:
         GUROBI_ROOT_DIR: /opt/gurobi751/linux64
 
     - name: multi-hypotheses-tracking-with-gurobi
-      recipe-repo: https://github.com/chaubold/multiHypothesesTracking
+      recipe-repo: https://github.com/ilastik/multiHypothesesTracking
       tag: master
       recipe-subdir: conda-recipe
       no-test: true
@@ -129,7 +129,7 @@ recipe-specs:
         GUROBI_ROOT_DIR: /opt/gurobi751/linux64
     
     - name: multi-hypotheses-tracking-with-cplex
-      recipe-repo: https://github.com/chaubold/multiHypothesesTracking
+      recipe-repo: https://github.com/ilastik/multiHypothesesTracking
       tag: master
       recipe-subdir: conda-recipe
       environment:
