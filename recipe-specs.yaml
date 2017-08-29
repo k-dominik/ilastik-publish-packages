@@ -1,3 +1,11 @@
+shared-config:
+  python: '3.6'
+  numpy: '1.12'
+  repo-cache-dir: ./repo-cache # Relative to this yaml file's directory.
+  source-channels:
+    - ilastik-forge
+    - conda-forge
+  destination-channel: ilastik-forge
 
 recipe-specs:
 

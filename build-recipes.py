@@ -1,5 +1,5 @@
 import os
-from os.path import basename, splitext, abspath, exists
+from os.path import basename, splitext, abspath, exists, dirname, normpath
 from pathlib import Path
 import sys
 import copy
@@ -15,34 +15,45 @@ CONDA_PLATFORM = { 'Darwin': 'osx-64',
                    'Linux': 'linux-64',
                    'Windows': 'win-64' }[platform.system()]
 
-REPO_CACHE_DIR = Path(abspath('./repo-cache'))
-PYTHON_VERSION = '3.6'
-NUMPY_VERSION = '1.12'
-SOURCE_CHANNEL_STRING  = '-c ilastik-forge -c conda-forge'
-DESTINATION_CHANNEL = 'ilastik-forge'
-
 # There's probably some proper way to obtain BUILD_PKG_DIR
 # via the conda.config python API, but I can't figure it out.
 CONDA_ROOT = Path( subprocess.check_output('conda info --root', shell=True).rstrip().decode() )
-BUILD_PKG_DIR = CONDA_ROOT / 'conda-bld' / CONDA_PLATFORM
+BUILD_PKG_DIR = CONDA_ROOT / 'conda-bld'
+
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('recipe_specs_path')
     args = parser.parse_args()
     
-    mkdir_p(REPO_CACHE_DIR)
-    
     specs_file_contents = yaml.load(open(args.recipe_specs_path, 'r'))
+
+    # Read the 'shared-config' section
+    shared_config = specs_file_contents["shared-config"]
+    expected_shared_config_keys = ['python', 'numpy', 'source-channels', 'destination-channel', 'repo-cache-dir']
+    assert set(shared_config.keys()) == set(expected_shared_config_keys), \
+        f"shared-config section is missing expected keys or has too many.  Expected: {expected_shared_config_keys}"
+
+    # Convenience member
+    shared_config['source-channel-string'] = ' '.join([f'-c {ch}' for ch in shared_config['source-channels']])
+
+    # Overwrite repo-cache-dir with an absolute path
+    # Path is given relative to the specs file directory. 
+    if not shared_config['repo-cache-dir'].startswith('/'):
+        specs_dir = Path( dirname( abspath(args.recipe_specs_path) ) )
+        shared_config['repo-cache-dir'] = Path( normpath( specs_dir / shared_config['repo-cache-dir'] ) )
+    
+    mkdir_p(shared_config['repo-cache-dir'])
+    
     recipe_specs = specs_file_contents["recipe-specs"]
     for spec in recipe_specs:
-        build_and_upload_recipe(spec)
+        build_and_upload_recipe(spec, shared_config)
 
     print("--------")
     print("DONE")
     print("--------")
 
-def build_and_upload_recipe(recipe_spec):
+def build_and_upload_recipe(recipe_spec, shared_config):
     """
     Given a recipe-spec dictionary, build and upload the recipe if
     it doesn't already exist on ilastik-forge.
@@ -61,7 +72,7 @@ def build_and_upload_recipe(recipe_spec):
       - tag -- Which tag/branch/commit of the recipe-repo to use.
       - environment (optional) -- Extra environment variables to define before building the recipe
       - no-test (optional) -- If true, use 'conda build --no-test' when building the recipe
-      - conda-build-flag (optional) -- Extra arguments to pass to conda build for this package
+      - conda-build-flags (optional) -- Extra arguments to pass to conda build for this package
     """
     # Extract spec fields
     package_name = recipe_spec['name']
@@ -82,23 +93,23 @@ def build_and_upload_recipe(recipe_spec):
     print("-------------------------------------------")        
     print(f"Processing {package_name}")
 
-    os.chdir(REPO_CACHE_DIR)
+    os.chdir(shared_config['repo-cache-dir'])
     repo_dir = checkout_recipe_repo(recipe_repo, tag)
 
     # All subsequent work takes place within the recipe repo
     os.chdir(repo_dir)
 
     # Render
-    recipe_version, recipe_build_string = get_rendered_version(package_name, recipe_subdir, build_environment)
+    recipe_version, recipe_build_string = get_rendered_version(package_name, recipe_subdir, build_environment, shared_config)
     print(f"Recipe version is: {package_name}-{recipe_version}-{recipe_build_string}")
 
     # Check our channel.  Did we already upload this version?
-    if check_already_exists(package_name, recipe_version, recipe_build_string):
-        print(f"Found {package_name}-{recipe_version}-{recipe_build_string} on {DESTINATION_CHANNEL}, skipping build.")
+    if check_already_exists(package_name, recipe_version, recipe_build_string, shared_config):
+        print(f"Found {package_name}-{recipe_version}-{recipe_build_string} on {shared_config['destination-channel']}, skipping build.")
     else:
         # Not on our channel.  Build and upload.
-        build_recipe(package_name, recipe_subdir, conda_build_flags, build_environment)
-        upload_package(package_name, recipe_version, recipe_build_string)        
+        build_recipe(package_name, recipe_subdir, conda_build_flags, build_environment, shared_config)
+        upload_package(package_name, recipe_version, recipe_build_string, shared_config)
 
 
 def checkout_recipe_repo(recipe_repo, tag):
@@ -124,7 +135,7 @@ def checkout_recipe_repo(recipe_repo, tag):
 
     return repo_name
 
-def get_rendered_version(package_name, recipe_subdir, build_environment):
+def get_rendered_version(package_name, recipe_subdir, build_environment, shared_config):
     """
     Use 'conda render' to process a recipe's meta.yaml (processes jinja templates and selectors).
     Returns the version and build string from the rendered file.
@@ -132,7 +143,12 @@ def get_rendered_version(package_name, recipe_subdir, build_environment):
     print(f"Rendering recipe in {recipe_subdir}...")
     temp_meta_file = tempfile.NamedTemporaryFile(delete=False)
     temp_meta_file.close()
-    render_cmd = f"conda render --python={PYTHON_VERSION} --numpy={NUMPY_VERSION} {recipe_subdir} {SOURCE_CHANNEL_STRING} --file {temp_meta_file.name}"
+    render_cmd = ( f"conda render"
+                   f" --python={shared_config['python']}"
+                   f" --numpy={shared_config['numpy']}"
+                   f" {recipe_subdir}"
+                   f" {shared_config['source-channel-string']}"
+                   f" --file {temp_meta_file.name}" )
     print('\t' + render_cmd)
     rendered_meta_text = subprocess.check_output(render_cmd, env=build_environment, shell=True).decode()
     meta = yaml.load(open(temp_meta_file.name, 'r'))
@@ -148,13 +164,13 @@ def get_rendered_version(package_name, recipe_subdir, build_environment):
     return meta['package']['version'], build_string_with_hash
 
 
-def check_already_exists(package_name, recipe_version, recipe_build_string):
+def check_already_exists(package_name, recipe_version, recipe_build_string, shared_config):
     """
     Check if the given package already exists on anaconda.org in the
     ilastik-forge channel with the given version and build string.
     """
-    print(f"Searching channel: {DESTINATION_CHANNEL}")
-    search_cmd = f"conda search --json  --full-name --override-channels --channel={DESTINATION_CHANNEL} {package_name}"  
+    print(f"Searching channel: {shared_config['destination-channel']}")
+    search_cmd = f"conda search --json  --full-name --override-channels --channel={shared_config['destination-channel']} {package_name}"  
     print('\t' + search_cmd)
     try:
         search_results_text = subprocess.check_output( search_cmd, shell=True ).decode()
@@ -168,20 +184,23 @@ def check_already_exists(package_name, recipe_version, recipe_build_string):
     if package_name not in search_results:
         return False
 
-    print("Found package!")
-
     for result in search_results[package_name]:
         if result['build'] == recipe_build_string and result['version'] == recipe_version:
+            print("Found package!")
             return True
     return False
 
 
-def build_recipe(package_name, recipe_subdir, build_flags, build_environment):
+def build_recipe(package_name, recipe_subdir, build_flags, build_environment, shared_config):
     """
     Build the recipe.
     """
     print(f"Building {package_name}")
-    build_cmd = f"conda build {build_flags} --python={PYTHON_VERSION} --numpy={NUMPY_VERSION} {recipe_subdir} {SOURCE_CHANNEL_STRING}"
+    build_cmd = ( f"conda build {build_flags}"
+                  f" --python={shared_config['python']}"
+                  f" --numpy={shared_config['numpy']}"
+                  f" {shared_config['source-channel-string']}"
+                  f" {recipe_subdir}" )
     print('\t' + build_cmd)
     try:
         subprocess.check_call(build_cmd, env=build_environment, shell=True)
@@ -190,13 +209,20 @@ def build_recipe(package_name, recipe_subdir, build_flags, build_environment):
         sys.exit(1)
 
 
-def upload_package(package_name, recipe_version, recipe_build_string):
+def upload_package(package_name, recipe_version, recipe_build_string, shared_config):
     """
     Upload the package to the ilastik-forge channel.
     """
     pkg_file_name = f"{package_name}-{recipe_version}-{recipe_build_string}.tar.bz2"
-    pkg_file_path = BUILD_PKG_DIR / pkg_file_name
-    upload_cmd = f"anaconda upload -u {DESTINATION_CHANNEL} {pkg_file_path}"
+
+    pkg_file_path = BUILD_PKG_DIR / CONDA_PLATFORM / pkg_file_name
+    if not os.path.exists(pkg_file_path):
+        # Maybe it's a noarch package?
+        pkg_file_path = BUILD_PKG_DIR / 'noarch' / pkg_file_name
+    if not os.path.exists(pkg_file_path):
+        raise RuntimeError("Can't find built package: f{pkg_file_name}")
+    
+    upload_cmd = f"anaconda upload -u {shared_config['destination-channel']} {pkg_file_path}"
     print(f"Uploading {pkg_file_name}")
     print(upload_cmd)
     subprocess.check_call(upload_cmd, shell=True)
