@@ -1,0 +1,107 @@
+shared-config:
+  python: '3.6'
+  numpy: '1.12'
+  repo-cache-dir: ./repo-cache # Relative to this yaml file's directory.
+  source-channels:
+    - flyem-forge
+    - conda-forge
+  destination-channel: flyem-forge
+
+recipe-specs:
+
+  - name: jsoncpp
+    recipe-repo: https://github.com/stuarteberg/jsoncpp-feedstock
+    tag: v1.6.2
+    recipe-subdir: recipe
+
+  - name: jansson
+    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    tag: master
+    recipe-subdir: jansson
+
+  - name: lz4
+    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    tag: master
+    recipe-subdir: lz4
+
+  - name: python-lz4
+    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    tag: master
+    recipe-subdir: python-lz4
+
+  - name: quilted
+    recipe-repo: https://github.com/stuarteberg/quilted
+    tag: master
+    recipe-subdir: conda-recipe
+
+  - name: logcollector
+    recipe-repo: https://github.com/stuarteberg/logcollector
+    tag: master
+    recipe-subdir: conda-recipe
+
+  - name: dvid-resource-manager
+    recipe-repo: https://github.com/janelia-flyem/DVIDResourceManager
+    tag: master
+    recipe-subdir: conda-recipe
+
+  - name: numpy-allocation-tracking
+    recipe-repo: https://github.com/stuarteberg/numpy-allocation-tracking
+    tag: master
+    recipe-subdir: conda-recipe
+
+  - name: libdvid-cpp
+    recipe-repo: https://github.com/janelia-flyem/libdvid-cpp
+    tag: master
+    recipe-subdir: conda-recipe
+      
+    # Optional specs
+    no_test: true
+    environment:
+      SKIP_LIBDVID_TESTS: 1
+
+  - name: lowtis
+    recipe-repo: https://github.com/janelia-flyem/lowtis
+    tag: master
+    recipe-subdir: conda-recipe
+
+  - name: opencv-nopython
+    recipe-repo: https://github.com/stuarteberg/opencv-feedstock
+    tag: v2-nopython
+    recipe-subdir: recipe
+    
+  - name: vtk-nopython
+    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    tag: master
+    recipe-subdir: vtk-nopython
+      
+  - name: neuroproof
+    recipe-repo: https://github.com/janelia-flyem/NeuroProof
+    tag: master
+    recipe-subdir: conda-recipe
+      
+    # Optional specs
+    no_test: false
+    environment:
+      SKIP_NEUROPROOF_TESTS: 0
+
+  - name: neutube-python
+    recipe-repo: https://github.com/janelia-flyem/NeuTu
+    tag:  develop
+    recipe-subdir: recipe-neutube-python
+
+  - name: dvidsparkservices
+    recipe-repo: https://github.com/janelia-flyem/DVIDSparkServices
+    tag:  master
+    recipe-subdir: conda-recipe
+    no_test: false
+
+  - name: neutu
+    recipe-repo: https://github.com/janelia-flyem/NeuTu
+    tag:  flyem_release
+    recipe-subdir: recipe-neutu
+
+## FIXME: Can we just use the conda-forge package?
+#  - name: libjpeg-turbo-feedstock
+#    recipe-repo: 
+#    tag:  
+#    recipe-subdir: 
