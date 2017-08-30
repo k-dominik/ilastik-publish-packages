@@ -95,13 +95,49 @@ recipe-specs:
     recipe-subdir: conda-recipe
     no_test: false
 
-  - name: neutu
-    recipe-repo: https://github.com/janelia-flyem/NeuTu
-    tag:  flyem_release
-    recipe-subdir: recipe-neutu
+  - name: dvid
+    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    tag:  master
+    recipe-subdir: dvid
+
+  - name: diced
+    recipe-repo: https://github.com/janelia-flyem/diced
+    tag:  master
+    recipe-subdir: conda-recipe
+
+## FIXME: Our recipe for google-api-client hasn't been updated yet.
+#  - name: google-api-client
+#    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+#    tag:  master
+#    recipe-subdir: google-api-client
+
+## FIXME: No recipe for pyzem yet.
+#  - name: pyzem
+#    recipe-repo: https://github.com/janelia-flyem/pyzem
+#    tag:  master
+#    recipe-subdir: conda-recipe
+
+## FIXME: No recipe for flypylib yet.
+#  - name: flypylib
+#    recipe-repo: https://github.com/janelia-flyem/flypylib
+#    tag:  master
+#    recipe-subdir: conda-recipe
+
+## FIXME: No recipe for libdvid-utils yet.
+#  - name: libdvid-utils
+#    recipe-repo: https://github.com/janelia-flyem/libdvid-utils
+#    tag:  master
+#    recipe-subdir: conda-recipe
+
+## FIXME: NeuTu recipe isn't updated yet.
+#  - name: neutu
+#    recipe-repo: https://github.com/janelia-flyem/NeuTu
+#    tag:  flyem_release
+#    recipe-subdir: recipe-neutu
 
 ## FIXME: Can we just use the conda-forge package?
 #  - name: libjpeg-turbo-feedstock
 #    recipe-repo: 
 #    tag:  
 #    recipe-subdir: 
+
