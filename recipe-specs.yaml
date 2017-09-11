@@ -61,7 +61,7 @@ recipe-specs:
       recipe-subdir: conda-recipe
     
     - name: ilastikrag
-      recipe-repo: https://github.com/stuarteberg/ilastikrag
+      recipe-repo: https://github.com/ilastik/ilastikrag
       tag: master 
       recipe-subdir: conda-recipe
  
