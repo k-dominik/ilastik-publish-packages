@@ -113,6 +113,19 @@ recipe-specs:
         - linux
         - osx
 
+   - name: ilastik-meta
+     recipe-repo: https://github.com/ilastik/ilastik-build-conda
+     tag: master
+     recipe-subdir: ilastik-meta
+   
+   - name: ilastik-launch
+     recipe-repo: https://github.com/ilastik/ilastik-build-conda
+     tag: master
+     recipe-subdir: ilastik-launch
+     build-on:
+      - linux
+      - osx
+
     - name: ilastik-dependencies-no-solvers
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
       tag: master
@@ -193,14 +206,4 @@ recipe-specs:
       tag: master
       recipe-subdir: ilastik-dependencies
       environment:
-        WITH_SOLVERS: 1    
-
-#    - name: ilastik-meta
-#      recipe-repo: https://github.com/ilastik/ilastik-build-conda
-#      tag: master
-#      recipe-subdir: ilastik-meta
-#    
-#    - name: ilastik-launch
-#      recipe-repo: https://github.com/ilastik/ilastik-build-conda
-#      tag: master
-#      recipe-subdir: ilastik-launch
+        WITH_SOLVERS: 1
