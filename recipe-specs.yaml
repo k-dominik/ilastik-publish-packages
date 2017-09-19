@@ -16,7 +16,12 @@ recipe-specs:
       
       # Optional specs
       environment: {}
-      no-test: false
+      # conda-build-flags: --no-test
+      # by default a package is built on all 3 platforms
+      build-on:
+        - linux
+        - win
+        - osx
  
     # FIXME: We would like to use conda-forge's package for vigra,
     # but it doesn't build WITH_LEMON yet.
@@ -47,13 +52,15 @@ recipe-specs:
       recipe-repo: https://github.com/stuarteberg/iiboost
       tag: clang
       recipe-subdir: conda-recipe
+      build-on:
+        - linux
+        - osx
         
     - name: ilastik-feature-selection
       recipe-repo: https://github.com/ilastik/ilastik-feature-selection
       tag: master
       recipe-subdir: conda-recipe
-      no-test: true
-      conda-build-flags: --no-remove-work-dir
+      conda-build-flags: --no-remove-work-dir --no-test
  
     - name: ilastiktools
       recipe-repo: https://github.com/ilastik/ilastiktools
@@ -102,9 +109,20 @@ recipe-specs:
       recipe-repo: https://github.com/ilastik/fastfilters
       tag: ilastik
       recipe-subdir: pkg/conda/fastfilters
+      build-on:
+        - linux
+        - osx
 
+    - name: ilastik-dependencies-no-solvers
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: master
+      recipe-subdir: ilastik-dependencies
+      environment:
+        WITH_SOLVERS: 0
+
+############################################################################
 ##
-## Need solvers for these packages
+## All the following packages need solvers, or are only needed if solvers are present
 ##    
     - name: opengm-structured-learning-headers
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
@@ -130,7 +148,7 @@ recipe-specs:
       recipe-repo: https://github.com/ilastik/multiHypothesesTracking
       tag: master
       recipe-subdir: conda-recipe
-      no-test: true
+      conda-build-flags: --no-test
       environment:
         WITH_GUROBI: 1
         WITH_CPLEX: 0
@@ -168,14 +186,7 @@ recipe-specs:
 #      recipe-subdir: conda-recipe
 #      environment:
 #        WITH_CPLEX: 1
-#        CPLEX_ROOT_DIR: /Users/bergs/Applications/IBM/ILOG/CPLEX_Studio_Community127 
-
-    - name: ilastik-dependencies-no-solvers
-      recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: master
-      recipe-subdir: ilastik-dependencies
-      environment:
-        WITH_SOLVERS: 0    
+#        CPLEX_ROOT_DIR: /Users/bergs/Applications/IBM/ILOG/CPLEX_Studio_Community127     
 
     - name: ilastik-dependencies
       recipe-repo: https://github.com/ilastik/ilastik-build-conda

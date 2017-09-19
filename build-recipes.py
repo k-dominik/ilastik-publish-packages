@@ -14,6 +14,7 @@ import yaml
 CONDA_PLATFORM = { 'Darwin': 'osx-64',
                    'Linux': 'linux-64',
                    'Windows': 'win-64' }[platform.system()]
+PLATFORM_STR = CONDA_PLATFORM.replace('-64', '')
 
 # There's probably some proper way to obtain BUILD_PKG_DIR
 # via the conda.config python API, but I can't figure it out.
@@ -71,8 +72,8 @@ def build_and_upload_recipe(recipe_spec, shared_config):
       - recipe-subdir -- The name of the recipe directory within the git repo
       - tag -- Which tag/branch/commit of the recipe-repo to use.
       - environment (optional) -- Extra environment variables to define before building the recipe
-      - no-test (optional) -- If true, use 'conda build --no-test' when building the recipe
       - conda-build-flags (optional) -- Extra arguments to pass to conda build for this package
+      - build-on (optional) -- A list of operating systems on which the package should be built. Available are: osx, win, linux
     """
     # Extract spec fields
     package_name = recipe_spec['name']
@@ -80,18 +81,27 @@ def build_and_upload_recipe(recipe_spec, shared_config):
     tag = recipe_spec['tag']
     recipe_subdir = recipe_spec['recipe-subdir']
     conda_build_flags = recipe_spec.get('conda-build-flags', '')
+
+    print("-------------------------------------------")        
+    print(f"Processing {package_name}")
     
-    if 'no-test' in recipe_spec and recipe_spec['no-test']:
-        conda_build_flags += ' --no-test'
-    
+    # check whether we need to build the package on this OS at all
+    if 'build-on' in recipe_spec:
+        platforms_to_build_on = recipe_spec['build-on']
+        assert(all(o in ['win', 'osx', 'linux'] for o in platforms_to_build_on))
+    else:
+        platforms_to_build_on = ['win', 'osx', 'linux']
+
+    if PLATFORM_STR not in platforms_to_build_on:
+        print(f"Not building {package_name} on platform {PLATFORM_STR}, only builds on {platforms_to_build_on}")
+        return
+
+    # configure build environment
     build_environment = dict(**os.environ)
     if 'environment' in recipe_spec:
         for key in recipe_spec['environment'].keys():
             recipe_spec['environment'][key] = str(recipe_spec['environment'][key])
         build_environment.update(recipe_spec['environment'])
-
-    print("-------------------------------------------")        
-    print(f"Processing {package_name}")
 
     os.chdir(shared_config['repo-cache-dir'])
     repo_dir = checkout_recipe_repo(recipe_repo, tag)
