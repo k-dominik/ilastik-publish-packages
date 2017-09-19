@@ -1,11 +1,11 @@
 shared-config:
-  python: '3.6'
-  numpy: '1.12'
-  repo-cache-dir: ./repo-cache # Relative to this yaml file's directory.
-  source-channels:
-    - ilastik-forge
-    - conda-forge
-  destination-channel: ilastik-forge
+    python: '3.6'
+    numpy: '1.12'
+    repo-cache-dir: ./repo-cache # Relative to this yaml file's directory.
+    source-channels:
+        - ilastik-forge
+        - conda-forge
+    destination-channel: ilastik-forge
 
 recipe-specs:
 
@@ -113,18 +113,18 @@ recipe-specs:
         - linux
         - osx
 
-   - name: ilastik-meta
-     recipe-repo: https://github.com/ilastik/ilastik-build-conda
-     tag: master
-     recipe-subdir: ilastik-meta
-   
-   - name: ilastik-launch
-     recipe-repo: https://github.com/ilastik/ilastik-build-conda
-     tag: master
-     recipe-subdir: ilastik-launch
-     build-on:
-      - linux
-      - osx
+    - name: ilastik-meta
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: master
+      recipe-subdir: ilastik-meta
+    
+    - name: ilastik-launch
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: master
+      recipe-subdir: ilastik-launch
+      build-on:
+       - linux
+       - osx
 
     - name: ilastik-dependencies-no-solvers
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
@@ -207,3 +207,4 @@ recipe-specs:
       recipe-subdir: ilastik-dependencies
       environment:
         WITH_SOLVERS: 1
+
