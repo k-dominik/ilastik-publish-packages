@@ -42,10 +42,23 @@ conda install conda-build --overwrite-channels -c defaults # to get the latest c
 * Install CMake, e.g. by `conda install cmake` or through `brew`.
 * Install the anaconda client for uploading packages to our `ilastik-forge` channel: `conda install anaconda-client` in your conda root environment
 
+### Windows:
+
+* Install the Visual Studio 2015 build tools (which contain the VC14 compiler) from http://landinghub.visualstudio.com/visual-cpp-build-tools
+  - select _custom_ installation and select the Win 10 SDK
+* Install Miniconda Python 3 64-bit and let it add conda to the environment vars
+  - If you do not do this, the `activate` step below will fail. Then you'll have to add `C:\Users\YOURUSERNAME\Miniconda3\Scripts` to `PATH` via the control panel.
+* Open a command prompt by executing: `C:\Program Files (x86)\Microsoft Visual C++ Build Tools\Visual C++ 2015 x64 Native Build Tools CMD`
+* Install some prerequisites in conda's root environment:
+  ```sh
+  activate root
+  conda install git cmake pyyaml conda-build anaconda-client
+  ```
+
 
 ### Solvers:
 
-To build the tracking and multicut C++ packages with all features (contained in `ilastik-dependencies` below), you need to install the ILP solvers Gurobi and CPLEX on your development machine:
+To build the tracking and multicut C++ packages with all features (listed in `ilastik-dependencies` at the bottom), you need to install the ILP solvers Gurobi and CPLEX on your development machine:
 
 * **CPLEX**
     * Linux Docker Container:
@@ -56,7 +69,9 @@ To build the tracking and multicut C++ packages with all features (contained in 
           ```
         * quit the clean shell (exit)
     * macOS (requires CPLEX version 12.7 or newer, the ones before weren't built with clang):
-      ```bash cplex_studio12.7.1.osx.bin```
+      ```
+      bash cplex_studio12.7.1.osx.bin
+      ```
 * **Gurobi:**
     * Extract/Install Gurobi on the machine
     * If you do not have that yet, obtain a licence for the build machine (needs to be done for each new docker container!) and run `grbgetkey ...` as described on their website.
@@ -69,7 +84,7 @@ You need to be logged in to your https://anaconda.org account by running `anacon
 git clone https://github.com/ilastik/ilastik-publish-packages
 cd ilastik-publish-packages
 source activate root # needs to have latest conda-build and anaconda, and being logged into an anaconda account
-# on Linux:
+# on Linux and Windows:
 python build-recipes.py recipe-specs.yaml
 # on Mac:
 MACOSX_DEPLOYMENT_TARGET=10.9 python build-recipes.py recipe-specs.yaml
@@ -91,8 +106,12 @@ recipe-specs:
       # Optional specs
       environment:
           MY_VAR: VALUE
-      no_test: false
       conda-build-flags: STRING_THAT_WILL_BE_APPENDED_TO_CONDA_BUILD
+      # by default a package is built on all 3 platforms, you can restrict that by specifying the following
+      build-on:
+        - linux
+        - win
+        - osx
 
     - name: NEXT_PACKAGE
           ...
