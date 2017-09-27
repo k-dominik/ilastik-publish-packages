@@ -9,6 +9,14 @@ shared-config:
 
 recipe-specs:
 
+  ##
+  ## This list will be processed in the order shown here,
+  ## so keep it in sorted order, starting with the 'bottom'
+  ## of the dependency stack and proceeding to the 'top' of the stack.
+  ## That is, packages at the end of the list may depend on packages
+  ## from the beginning of the list, but not vice-versa.
+  ##
+
   - name: jsoncpp
     recipe-repo: https://github.com/stuarteberg/jsoncpp-feedstock
     tag: v1.6.2
