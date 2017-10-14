@@ -85,16 +85,16 @@ git clone https://github.com/ilastik/ilastik-publish-packages
 cd ilastik-publish-packages
 source activate root # needs to have latest conda-build and anaconda, and being logged into an anaconda account
 # on Linux and Windows:
-python build-recipes.py recipe-specs.yaml
+python build-recipes.py ilastik-recipe-specs.yaml
 # on Mac:
-MACOSX_DEPLOYMENT_TARGET=10.9 python build-recipes.py recipe-specs.yaml
+MACOSX_DEPLOYMENT_TARGET=10.9 python build-recipes.py ilastik-recipe-specs.yaml
 ```
 
-The `build-recipes.py` script parses the packages from `recipe-specs.yaml`, and for each package checks whether that version is already available on the `ilastik-forge` channel. If that is not the case, it will build the package and upload it to `ilastik-forge`. By default, the script **assumes you have both solvers** and wants to build all packages. If you do not have CPLEX or Gurobi, comment out the sections near the end that have `cplex` or `gurobi` in their name, as well as the `ilastik-dependencies` package as described below.
+The `build-recipes.py` script parses the packages from `ilastik-recipe-specs.yaml`, and for each package checks whether that version is already available on the `ilastik-forge` channel. If that is not the case, it will build the package and upload it to `ilastik-forge`. By default, the script **assumes you have both solvers** and wants to build all packages. If you do not have CPLEX or Gurobi, comment out the sections near the end that have `cplex` or `gurobi` in their name, as well as the `ilastik-dependencies` package as described below.
 
 ### Configuration:
 
-If you want to change which packages are built, _e.g._ to build **without solvers** edit the recipe-specs.yaml file. There, you can comment or change the sections specific to respective packages.
+If you want to change which packages are built, _e.g._ to build **without solvers** edit the ilastik-recipe-specs.yaml file. There, you can comment or change the sections specific to respective packages.
 It is a YAML file with the following format:
 ```yaml
 recipe-specs:
