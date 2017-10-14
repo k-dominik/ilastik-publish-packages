@@ -90,7 +90,7 @@ def main():
         specs_dir = Path( dirname( abspath(args.recipe_specs_path) ) )
         shared_config['repo-cache-dir'] = Path( normpath( specs_dir / shared_config['repo-cache-dir'] ) )
     
-    mkdir_p(shared_config['repo-cache-dir'])
+    os.makedirs(shared_config['repo-cache-dir'], exist_ok=True)
     
     selected_recipe_specs = get_selected_specs(args, specs_file_contents["recipe-specs"])
 
@@ -341,21 +341,6 @@ def upload_package(package_name, recipe_version, recipe_build_string, shared_con
     print(upload_cmd)
     subprocess.check_call(upload_cmd, shell=True)
 
-
-def mkdir_p(path):
-    """
-    Like the bash command: mkdir -p
-    
-    ...why the heck isn't this built-in to the Python std library?
-    """
-    import os, errno
-    try:
-        os.makedirs(path)
-    except OSError as exc:  # Python >2.5
-        if exc.errno == errno.EEXIST and os.path.isdir(path):
-            pass
-        else:
-            raise
 
 if __name__ == "__main__":
 #     import os
