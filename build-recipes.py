@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# PYTHON_ARGCOMPLETE_OK
 import os
 from os.path import basename, splitext, abspath, exists, dirname, normpath
 from pathlib import Path
@@ -8,24 +10,68 @@ import subprocess
 import platform
 import json
 import tempfile
-
 import yaml
+import textwrap
 
-CONDA_PLATFORM = { 'Darwin': 'osx-64',
-                   'Linux': 'linux-64',
-                   'Windows': 'win-64' }[platform.system()]
-PLATFORM_STR = CONDA_PLATFORM.replace('-64', '')
+try:
+    import argcomplete
+    from argcomplete.completers import FilesCompleter
+    ENABLE_TAB_COMPLETION = True
+except:
+    # See --help text for instructions.
+    ENABLE_TAB_COMPLETION = False
 
-# There's probably some proper way to obtain BUILD_PKG_DIR
-# via the conda.config python API, but I can't figure it out.
-CONDA_ROOT = Path( subprocess.check_output('conda info --root', shell=True).rstrip().decode() )
-BUILD_PKG_DIR = CONDA_ROOT / 'conda-bld'
 
+# See _init_globals(), below
+CONDA_PLATFORM = None
+PLATFORM_STR = None
+BUILD_PKG_DIR = None
+
+def parse_cmdline_args():
+    """
+    Parse the user's command-lines, with support for tab-completion.
+    """
+    bashrc = '~/.bashrc'
+    if os.path.exists(os.path.expanduser('~/.bash_profile')):
+        bashrc = '~/.bash_profile'
+
+    prog_name = sys.argv[0]
+    if prog_name[0] not in ('.', '/'):
+        prog_name = './' + prog_name
+
+    help_epilog = textwrap.dedent(f"""\
+        --------------------------------------------------------------------
+        To activate command-line tab-completion, run the following commands:
+        
+        conda install argcomplete
+        echo 'eval "$(register-python-argcomplete {prog_name} -s bash)"' >> {bashrc}
+        
+        ...and run this script directly as "{prog_name}", not "python {prog_name}"
+        --------------------------------------------------------------------
+        """)
+
+    parser = argparse.ArgumentParser(epilog=help_epilog, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('-l', '--list', action='store_true', help='List the recipe names in the specs file')
+    specs_path_arg = parser.add_argument('recipe_specs_path', help='Path to a recipe specs YAML file')
+    selection_arg = parser.add_argument('selected_recipes', nargs='*', help='Which recipes to process (Default: process all)')
+
+    if ENABLE_TAB_COMPLETION:
+        def complete_recipe_selection(prefix, action, parser, parsed_args):
+            specs_file_contents = yaml.load(open(parsed_args.recipe_specs_path, 'r'))
+            recipe_specs = specs_file_contents["recipe-specs"]
+            names = (spec['name'] for spec in recipe_specs)
+            return filter( lambda name: name.startswith(prefix), names )
+    
+        specs_path_arg.completer = FilesCompleter(('.yml', '.yaml'), directories=False)
+        selection_arg.completer = complete_recipe_selection
+        argcomplete.autocomplete(parser)
+    
+    args = parser.parse_args()
+    return args
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('recipe_specs_path')
-    args = parser.parse_args()
+    args = parse_cmdline_args()
+    _init_globals()
     
     specs_file_contents = yaml.load(open(args.recipe_specs_path, 'r'))
 
@@ -46,13 +92,70 @@ def main():
     
     mkdir_p(shared_config['repo-cache-dir'])
     
-    recipe_specs = specs_file_contents["recipe-specs"]
-    for spec in recipe_specs:
+    selected_recipe_specs = get_selected_specs(args, specs_file_contents["recipe-specs"])
+
+    if args.list:
+        print_recipe_list(selected_recipe_specs)
+        sys.exit(0)
+
+    for spec in selected_recipe_specs:
         build_and_upload_recipe(spec, shared_config)
 
     print("--------")
     print("DONE")
     print("--------")
+
+
+def _init_globals():
+    """
+    We initialize globals in this function, AFTER argcomplete is used.
+    (Using subprocess interferes with argcomplete.)
+    """
+    global CONDA_PLATFORM
+    global BUILD_PKG_DIR
+    global PLATFORM_STR
+
+    CONDA_PLATFORM = { 'Darwin': 'osx-64',
+                       'Linux': 'linux-64',
+                       'Windows': 'win-64' }[platform.system()]
+    PLATFORM_STR = CONDA_PLATFORM.replace('-64', '')
+    
+    # There's probably some proper way to obtain BUILD_PKG_DIR
+    # via the conda.config python API, but I can't figure it out.
+    CONDA_ROOT = Path( subprocess.check_output('conda info --root', shell=True).rstrip().decode() )
+    BUILD_PKG_DIR = CONDA_ROOT / 'conda-bld'
+
+
+def print_recipe_list( recipe_specs ):
+    max_name = max( len(spec['name']) for spec in recipe_specs )
+    for spec in recipe_specs:
+        print(f"{spec['name']: <{max_name}} : {spec['recipe-repo']} ({spec['tag']})")
+
+
+def get_selected_specs(args, full_recipe_specs):
+    """
+    If the user gave a list of specific recipes to process,
+    select them from the given recipe specs.
+    """
+    if not args.selected_recipes:
+        return full_recipe_specs
+
+    available_recipe_names = [spec['name'] for spec in full_recipe_specs]
+    invalid_names = set(args.selected_recipes) - set(available_recipe_names)
+    if invalid_names:
+        sys.stderr.write("Invalid selection: The following recipes are not listed"
+                         f" in {args.recipe_specs_path}: {', '.join(invalid_names)}")
+        sys.exit(1)
+
+    # Remove non-selected recipes
+    filtered_specs = list(filter(lambda spec: spec['name'] in args.selected_recipes, full_recipe_specs))
+    filtered_names = [spec['name'] for spec in filtered_specs]
+    if filtered_names != args.selected_recipes:
+        print(f"WARNING: Your recipe list was not given in the same order as in {args.recipe_specs_path}.")
+        print(f"         They will be processed in the following order: {', '.join(filtered_names)}")
+
+    return filtered_specs
+    
 
 def build_and_upload_recipe(recipe_spec, shared_config):
     """
@@ -145,6 +248,7 @@ def checkout_recipe_repo(recipe_repo, tag):
 
     return repo_name
 
+
 def get_rendered_version(package_name, recipe_subdir, build_environment, shared_config):
     """
     Use 'conda render' to process a recipe's meta.yaml (processes jinja templates and selectors).
@@ -230,7 +334,7 @@ def upload_package(package_name, recipe_version, recipe_build_string, shared_con
         # Maybe it's a noarch package?
         pkg_file_path = BUILD_PKG_DIR / 'noarch' / pkg_file_name
     if not os.path.exists(pkg_file_path):
-        raise RuntimeError("Can't find built package: f{pkg_file_name}")
+        raise RuntimeError(f"Can't find built package: {pkg_file_name}")
     
     upload_cmd = f"anaconda upload -u {shared_config['destination-channel']} {pkg_file_path}"
     print(f"Uploading {pkg_file_name}")
