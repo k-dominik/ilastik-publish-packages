@@ -113,6 +113,17 @@ recipe-specs:
     tag:  master
     recipe-subdir: conda-recipe
 
+  - name: marching_cubes
+    recipe-repo: https://github.com/ilastik/marching_cubes
+    tag: master
+    recipe-subdir: conda-recipe
+
+  - name: fqm-mesh-simplification
+    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    tag: master
+    recipe-subdir: fqm-mesh-simplification
+
+
 ## FIXME: Our recipe for google-api-client hasn't been updated yet.
 #  - name: google-api-client
 #    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
