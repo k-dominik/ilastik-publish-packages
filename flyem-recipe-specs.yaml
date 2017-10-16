@@ -123,6 +123,10 @@ recipe-specs:
     tag: master
     recipe-subdir: fq-mesh-simplification
 
+  - name: vol2mesh
+    recipe-repo: https://github.com/stuarteberg/vol2mesh
+    tag: package-cleanup
+    recipe-subdir: conda-recipe
 
 ## FIXME: Our recipe for google-api-client hasn't been updated yet.
 #  - name: google-api-client
