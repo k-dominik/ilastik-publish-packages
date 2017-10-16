@@ -118,10 +118,10 @@ recipe-specs:
     tag: master
     recipe-subdir: conda-recipe
 
-  - name: fqm-mesh-simplification
+  - name: fq-mesh-simplification
     recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
     tag: master
-    recipe-subdir: fqm-mesh-simplification
+    recipe-subdir: fq-mesh-simplification
 
 
 ## FIXME: Our recipe for google-api-client hasn't been updated yet.
