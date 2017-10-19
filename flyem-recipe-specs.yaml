@@ -63,7 +63,7 @@ recipe-specs:
     recipe-subdir: conda-recipe
       
     # Optional specs
-    no_test: true
+    conda-build-flags: --no-test
     environment:
       SKIP_LIBDVID_TESTS: 1
 
@@ -88,7 +88,6 @@ recipe-specs:
     recipe-subdir: conda-recipe
       
     # Optional specs
-    no_test: false
     environment:
       SKIP_NEUROPROOF_TESTS: 0
 
@@ -101,7 +100,6 @@ recipe-specs:
     recipe-repo: https://github.com/janelia-flyem/DVIDSparkServices
     tag:  master
     recipe-subdir: conda-recipe
-    no_test: false
 
   - name: dvid
     recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
