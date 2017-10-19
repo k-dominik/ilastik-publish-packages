@@ -107,7 +107,7 @@ recipe-specs:
     
     - name: fastfilters
       recipe-repo: https://github.com/ilastik/fastfilters
-      tag: ilastik
+      tag: devel
       recipe-subdir: pkg/conda/fastfilters
       build-on:
         - linux
