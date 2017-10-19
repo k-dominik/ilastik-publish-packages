@@ -96,6 +96,11 @@ recipe-specs:
     tag:  develop
     recipe-subdir: recipe-neutube-python
 
+  - name: gsutil-env
+    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    tag: master
+    recipe-subdir: gsutil-env
+
   - name: dvidsparkservices
     recipe-repo: https://github.com/janelia-flyem/DVIDSparkServices
     tag:  master
