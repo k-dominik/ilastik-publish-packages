@@ -126,6 +126,11 @@ recipe-specs:
     tag: master
     recipe-subdir: fq-mesh-simplification
 
+  - name: draco
+    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    tag: master
+    recipe-subdir: draco
+
   - name: vol2mesh
     recipe-repo: https://github.com/stuarteberg/vol2mesh
     tag: package-cleanup
