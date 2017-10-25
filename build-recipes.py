@@ -230,21 +230,47 @@ def checkout_recipe_repo(recipe_repo, tag):
     Checkout the given repository and tag.
     Clone it first if necessary, and update any submodules it has.
     """
-    repo_name = splitext(basename(recipe_repo))[0]
+    try:
+        repo_name = splitext(basename(recipe_repo))[0]
+    
+        cwd = abspath(os.getcwd())
+        if not exists( repo_name ):
+            # assuming url of the form github.com/remote-name/myrepo[.git]
+            remote_name = recipe_repo.split('/')[-2]
+            subprocess.check_call(f"git clone -o {remote_name} {recipe_repo}", shell=True)
+            os.chdir(repo_name)
+        else:
+            # The repo is already cloned in the cache,
+            # but which remote do we want to fetch from?
+            os.chdir(repo_name)
+            remote_output = subprocess.check_output("git remote -v", shell=True).decode('utf-8').strip()
+            remotes = {}
+            for line in remote_output.split('\n'):
+                name, url, role = line.split()
+                remotes[url] = name
 
-    cwd = abspath(os.getcwd())
-    if not exists( repo_name ):
-        subprocess.check_call(f"git clone {recipe_repo}", shell=True)
-        os.chdir(repo_name)
-    else:
-        os.chdir(repo_name)
-        subprocess.check_call(f"git fetch", shell=True)
+            if recipe_repo in remotes:
+                remote_name = remotes[recipe_repo]
+            else:
+                # Repo existed locally, but was missing the desired remote.
+                # Add it.
+                remote_name = recipe_repo.split('/')[-2]
+                subprocess.check_call(f"git remote add {remote_name} {recipe_repo}", shell=True)
+                    
+            subprocess.check_call(f"git fetch {remote_name}", shell=True)
+    
+        print(f"Checking out {tag} of {repo_name} into {cwd}...")
+        subprocess.check_call(f"git checkout {tag}", shell=True)
+        subprocess.check_call(f"git pull --ff-only {remote_name} {tag}", shell=True)
+        subprocess.check_call(f"git submodule update --init --recursive", shell=True)
+        os.chdir(cwd)
+    except subprocess.CalledProcessError:
+        raise RuntimeError(f"Failed to clone or update the repository: {recipe_repo}\n"
+                            "Double-check the repo url, or delete your repo cache and try again.")
 
-    print(f"Checking out {tag} of {repo_name} into {cwd}...")
-    subprocess.check_call(f"git checkout {tag}", shell=True)
-    subprocess.check_call("git pull", shell=True)
-    subprocess.check_call(f"git submodule update --init --recursive", shell=True)
-    os.chdir(cwd)
+    print(f"Recipe checked out at tag: {tag}")
+    print("Most recent commit:")
+    subprocess.call("git log -n1", shell=True)
 
     return repo_name
 
