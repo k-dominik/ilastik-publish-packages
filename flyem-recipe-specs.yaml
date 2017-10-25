@@ -132,8 +132,8 @@ recipe-specs:
     recipe-subdir: draco
 
   - name: vol2mesh
-    recipe-repo: https://github.com/stuarteberg/vol2mesh
-    tag: package-cleanup
+    recipe-repo: https://github.com/janelia-flyem/vol2mesh
+    tag: master
     recipe-subdir: conda-recipe
 
 ## FIXME: Our recipe for google-api-client hasn't been updated yet.
