@@ -57,6 +57,11 @@ recipe-specs:
     tag: master
     recipe-subdir: conda-recipe
 
+  - name: dvidutils
+    recipe-repo: https://github.com/stuarteberg/dvidutils
+    tag: master
+    recipe-subdir: conda-recipe
+
   - name: libdvid-cpp
     recipe-repo: https://github.com/janelia-flyem/libdvid-cpp
     tag: master
