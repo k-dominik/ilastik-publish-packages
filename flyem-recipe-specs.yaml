@@ -111,6 +111,11 @@ recipe-specs:
     tag:  master
     recipe-subdir: conda-recipe
 
+  - name: basholeveldb
+    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    tag:  master
+    recipe-subdir: basholeveldb
+
   - name: dvid
     recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
     tag:  master
