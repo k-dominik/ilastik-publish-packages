@@ -64,7 +64,7 @@ recipe-specs:
  
     - name: ilastiktools
       recipe-repo: https://github.com/ilastik/ilastiktools
-      tag: master
+      tag: pybind11
       recipe-subdir: conda-recipe
     
     - name: ilastikrag
