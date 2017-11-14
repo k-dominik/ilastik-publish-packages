@@ -98,12 +98,13 @@ recipe-specs:
       tag: master
       recipe-subdir: conda-recipe
 
-
-#    - name: qimage2ndarray
-#      recipe-repo: https://github.com/ilastik/ilastik-build-conda
-#      tag: master
-#      recipe-subdir: qimage2ndarray
-
+    - name: nifty
+      recipe-repo: https://github.com/chaubold/nifty
+      tag: stacked_rag
+      recipe-subdir: conda-recipe
+      environment:
+        WITH_CPLEX: 0
+        WITH_GUROBI: 0
     
     - name: fastfilters
       recipe-repo: https://github.com/ilastik/fastfilters
@@ -172,29 +173,24 @@ recipe-specs:
         WITH_GUROBI: 0
         CPLEX_ROOT_DIR: /opt/cplex
 
-# FIXME: nifty build doesn't support python 3 yet, or clang...
-#    - name: nifty
-#      recipe-repo: https://github.com/DerThorsten/nifty
-#      tag: e330c2e # From 2017-04-07 (not sure if this works with python3)
-#      recipe-subdir: conda-recipe
-    
-# FIXME: nifty build doesn't support python 3 yet, or clang...
-#    - name: nifty-with-gurobi
-#      recipe-repo: https://github.com/DerThorsten/nifty
-#      tag: e330c2e # From 2017-04-07 (not sure if this works with python3)
-#      recipe-subdir: conda-recipe
-#      environment:
-#        WITH_GUROBI: 1
-#        GUROBI_ROOT_DIR: /Library/gurobi702/mac64
+    - name: nifty-with-gurobi
+      recipe-repo: https://github.com/chaubold/nifty
+      tag: stacked_rag
+      recipe-subdir: conda-recipe
+      environment:
+        WITH_CPLEX: 0
+        WITH_GUROBI: 1
+        GUROBI_ROOT_DIR: /opt/gurobi751/linux64
+        GUROBI_LIB_WIN: C:\gurobi751\win64\lib\libgurobi75.lib
 
-# FIXME: nifty build doesn't support python 3 yet, or clang...
-#    - nifty-with-cplex
-#      recipe-repo: https://github.com/DerThorsten/nifty
-#      tag: e330c2e # From 2017-04-07 (not sure if this works with python3)
-#      recipe-subdir: conda-recipe
-#      environment:
-#        WITH_CPLEX: 1
-#        CPLEX_ROOT_DIR: /Users/bergs/Applications/IBM/ILOG/CPLEX_Studio_Community127     
+    - name: nifty-with-cplex
+      recipe-repo: https://github.com/chaubold/nifty
+      tag: stacked_rag
+      recipe-subdir: conda-recipe
+      environment:
+        WITH_CPLEX: 1
+        WITH_GUROBI: 0
+        CPLEX_ROOT_DIR: /opt/cplex
 
     - name: ilastik-dependencies
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
