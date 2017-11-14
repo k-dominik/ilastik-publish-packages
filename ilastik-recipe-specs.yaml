@@ -109,9 +109,6 @@ recipe-specs:
       recipe-repo: https://github.com/ilastik/fastfilters
       tag: devel
       recipe-subdir: pkg/conda/fastfilters
-      build-on:
-        - linux
-        - osx
 
     - name: ilastik-meta
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
