@@ -111,6 +111,11 @@ recipe-specs:
     tag:  master
     recipe-subdir: munkres
 
+  - name: z5py
+    recipe-repo: https://github.com/stuarteberg/z5
+    tag:  upgrade-boost # Use boost-1.64
+    recipe-subdir: conda-recipe
+
   - name: dvidsparkservices
     recipe-repo: https://github.com/janelia-flyem/DVIDSparkServices
     tag:  master
