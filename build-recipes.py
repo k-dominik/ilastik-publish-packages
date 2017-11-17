@@ -295,7 +295,7 @@ def get_rendered_version(package_name, recipe_subdir, build_environment, shared_
     os.remove(temp_meta_file.name)
 
     if meta['package']['name'] != package_name:
-        raise RuntimeError("Recipe for package '{package_name}' has unexpected name: '{meta['package']['name']}'")
+        raise RuntimeError(f"Recipe for package '{package_name}' has unexpected name: '{meta['package']['name']}'")
     
     render_cmd += " --output"
     rendered_filename = subprocess.check_output(render_cmd, env=build_environment, shell=True).decode()
