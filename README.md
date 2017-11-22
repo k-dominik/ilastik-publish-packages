@@ -52,7 +52,7 @@ conda install conda-build --overwrite-channels -c defaults # to get the latest c
 * Install some prerequisites in conda's root environment:
   ```sh
   activate root
-  conda install git cmake pyyaml conda-build anaconda-client
+  conda install git cmake pyyaml conda-build anaconda-client m2-patch
   ```
 
 
