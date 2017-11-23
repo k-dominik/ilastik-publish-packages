@@ -58,7 +58,7 @@ conda install conda-build --overwrite-channels -c defaults # to get the latest c
 
 ### Solvers:
 
-To build the tracking and multicut C++ packages with all features (listed in `ilastik-dependencies` at the bottom), you need to install the ILP solvers Gurobi and CPLEX on your development machine:
+To build the tracking and multicut C++ packages with all features (listed in `ilastik-dependencies` at the bottom), you need to install the ILP solvers Gurobi and CPLEX on your development machine, and **adjust the paths to the solvers in the `ilastik-recipe-specs.yaml` file**:
 
 * **CPLEX**
     * Linux Docker Container:
