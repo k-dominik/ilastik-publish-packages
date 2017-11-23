@@ -27,6 +27,7 @@ CONDA_PLATFORM = None
 PLATFORM_STR = None
 BUILD_PKG_DIR = None
 
+
 def parse_cmdline_args():
     """
     Parse the user's command-lines, with support for tab-completion.
@@ -42,57 +43,68 @@ def parse_cmdline_args():
     help_epilog = textwrap.dedent(f"""\
         --------------------------------------------------------------------
         To activate command-line tab-completion, run the following commands:
-        
+
         conda install argcomplete
         echo 'eval "$(register-python-argcomplete {prog_name} -s bash)"' >> {bashrc}
-        
+
         ...and run this script directly as "{prog_name}", not "python {prog_name}"
         --------------------------------------------------------------------
         """)
 
-    parser = argparse.ArgumentParser(epilog=help_epilog, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('-l', '--list', action='store_true', help='List the recipe names in the specs file')
-    specs_path_arg = parser.add_argument('recipe_specs_path', help='Path to a recipe specs YAML file')
-    selection_arg = parser.add_argument('selected_recipes', nargs='*', help='Which recipes to process (Default: process all)')
+    parser = argparse.ArgumentParser(
+        epilog=help_epilog, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('-l', '--list', action='store_true',
+                        help='List the recipe names in the specs file')
+    specs_path_arg = parser.add_argument(
+        'recipe_specs_path', help='Path to a recipe specs YAML file')
+    selection_arg = parser.add_argument(
+        'selected_recipes', nargs='*', help='Which recipes to process (Default: process all)')
 
     if ENABLE_TAB_COMPLETION:
         def complete_recipe_selection(prefix, action, parser, parsed_args):
-            specs_file_contents = yaml.load(open(parsed_args.recipe_specs_path, 'r'))
+            specs_file_contents = yaml.load(
+                open(parsed_args.recipe_specs_path, 'r'))
             recipe_specs = specs_file_contents["recipe-specs"]
             names = (spec['name'] for spec in recipe_specs)
-            return filter( lambda name: name.startswith(prefix), names )
-    
-        specs_path_arg.completer = FilesCompleter(('.yml', '.yaml'), directories=False)
+            return filter(lambda name: name.startswith(prefix), names)
+
+        specs_path_arg.completer = FilesCompleter(
+            ('.yml', '.yaml'), directories=False)
         selection_arg.completer = complete_recipe_selection
         argcomplete.autocomplete(parser)
-    
+
     args = parser.parse_args()
     return args
+
 
 def main():
     args = parse_cmdline_args()
     _init_globals()
-    
+
     specs_file_contents = yaml.load(open(args.recipe_specs_path, 'r'))
 
     # Read the 'shared-config' section
     shared_config = specs_file_contents["shared-config"]
-    expected_shared_config_keys = ['python', 'numpy', 'source-channels', 'destination-channel', 'repo-cache-dir']
+    expected_shared_config_keys = [
+        'python', 'numpy', 'source-channels', 'destination-channel', 'repo-cache-dir']
     assert set(shared_config.keys()) == set(expected_shared_config_keys), \
         f"shared-config section is missing expected keys or has too many.  Expected: {expected_shared_config_keys}"
 
     # Convenience member
-    shared_config['source-channel-string'] = ' '.join([f'-c {ch}' for ch in shared_config['source-channels']])
+    shared_config['source-channel-string'] = ' '.join(
+        [f'-c {ch}' for ch in shared_config['source-channels']])
 
     # Overwrite repo-cache-dir with an absolute path
-    # Path is given relative to the specs file directory. 
+    # Path is given relative to the specs file directory.
     if not shared_config['repo-cache-dir'].startswith('/'):
-        specs_dir = Path( dirname( abspath(args.recipe_specs_path) ) )
-        shared_config['repo-cache-dir'] = Path( normpath( specs_dir / shared_config['repo-cache-dir'] ) )
-    
+        specs_dir = Path(dirname(abspath(args.recipe_specs_path)))
+        shared_config['repo-cache-dir'] = Path(
+            normpath(specs_dir / shared_config['repo-cache-dir']))
+
     os.makedirs(shared_config['repo-cache-dir'], exist_ok=True)
-    
-    selected_recipe_specs = get_selected_specs(args, specs_file_contents["recipe-specs"])
+
+    selected_recipe_specs = get_selected_specs(
+        args, specs_file_contents["recipe-specs"])
 
     if args.list:
         print_recipe_list(selected_recipe_specs)
@@ -115,21 +127,23 @@ def _init_globals():
     global BUILD_PKG_DIR
     global PLATFORM_STR
 
-    CONDA_PLATFORM = { 'Darwin': 'osx-64',
-                       'Linux': 'linux-64',
-                       'Windows': 'win-64' }[platform.system()]
+    CONDA_PLATFORM = {'Darwin': 'osx-64',
+                      'Linux': 'linux-64',
+                      'Windows': 'win-64'}[platform.system()]
     PLATFORM_STR = CONDA_PLATFORM.replace('-64', '')
-    
+
     # There's probably some proper way to obtain BUILD_PKG_DIR
     # via the conda.config python API, but I can't figure it out.
-    CONDA_ROOT = Path( subprocess.check_output('conda info --root', shell=True).rstrip().decode() )
+    CONDA_ROOT = Path(subprocess.check_output(
+        'conda info --root', shell=True).rstrip().decode())
     BUILD_PKG_DIR = CONDA_ROOT / 'conda-bld'
 
 
-def print_recipe_list( recipe_specs ):
-    max_name = max( len(spec['name']) for spec in recipe_specs )
+def print_recipe_list(recipe_specs):
+    max_name = max(len(spec['name']) for spec in recipe_specs)
     for spec in recipe_specs:
-        print(f"{spec['name']: <{max_name}} : {spec['recipe-repo']} ({spec['tag']})")
+        print(
+            f"{spec['name']: <{max_name}} : {spec['recipe-repo']} ({spec['tag']})")
 
 
 def get_selected_specs(args, full_recipe_specs):
@@ -148,27 +162,30 @@ def get_selected_specs(args, full_recipe_specs):
         sys.exit(1)
 
     # Remove non-selected recipes
-    filtered_specs = list(filter(lambda spec: spec['name'] in args.selected_recipes, full_recipe_specs))
+    filtered_specs = list(
+        filter(lambda spec: spec['name'] in args.selected_recipes, full_recipe_specs))
     filtered_names = [spec['name'] for spec in filtered_specs]
     if filtered_names != args.selected_recipes:
-        print(f"WARNING: Your recipe list was not given in the same order as in {args.recipe_specs_path}.")
-        print(f"         They will be processed in the following order: {', '.join(filtered_names)}")
+        print(
+            f"WARNING: Your recipe list was not given in the same order as in {args.recipe_specs_path}.")
+        print(
+            f"         They will be processed in the following order: {', '.join(filtered_names)}")
 
     return filtered_specs
-    
+
 
 def build_and_upload_recipe(recipe_spec, shared_config):
     """
     Given a recipe-spec dictionary, build and upload the recipe if
     it doesn't already exist on ilastik-forge.
-    
+
     More specifically:
       1. Clone the recipe repo to our cache directory (if necessary)
       2. Check out the tag (with submodules, if any)
       3. Render the recipe's meta.yaml ('conda render')
       4. Query the 'ilastik-forge' channel for the exact package.
       5. If the package doesn't exist on ilastik-forge channel yet, build it and upload it.
-     
+
     A recipe-spec is a dict with the following keys:
       - name -- The package name
       - recipe-repo -- A URL to the git repo that contains the package recipe.
@@ -185,25 +202,29 @@ def build_and_upload_recipe(recipe_spec, shared_config):
     recipe_subdir = recipe_spec['recipe-subdir']
     conda_build_flags = recipe_spec.get('conda-build-flags', '')
 
-    print("-------------------------------------------")        
+    print("-------------------------------------------")
     print(f"Processing {package_name}")
-    
+
     # check whether we need to build the package on this OS at all
     if 'build-on' in recipe_spec:
         platforms_to_build_on = recipe_spec['build-on']
-        assert(all(o in ['win', 'osx', 'linux'] for o in platforms_to_build_on))
+        assert isinstance(platforms_to_build_on, list)
+        assert(all(o in ['win', 'osx', 'linux']
+                   for o in platforms_to_build_on))
     else:
         platforms_to_build_on = ['win', 'osx', 'linux']
 
     if PLATFORM_STR not in platforms_to_build_on:
-        print(f"Not building {package_name} on platform {PLATFORM_STR}, only builds on {platforms_to_build_on}")
+        print(
+            f"Not building {package_name} on platform {PLATFORM_STR}, only builds on {platforms_to_build_on}")
         return
 
     # configure build environment
     build_environment = dict(**os.environ)
     if 'environment' in recipe_spec:
         for key in recipe_spec['environment'].keys():
-            recipe_spec['environment'][key] = str(recipe_spec['environment'][key])
+            recipe_spec['environment'][key] = str(
+                recipe_spec['environment'][key])
         build_environment.update(recipe_spec['environment'])
 
     os.chdir(shared_config['repo-cache-dir'])
@@ -213,16 +234,21 @@ def build_and_upload_recipe(recipe_spec, shared_config):
     os.chdir(repo_dir)
 
     # Render
-    recipe_version, recipe_build_string = get_rendered_version(package_name, recipe_subdir, build_environment, shared_config)
-    print(f"Recipe version is: {package_name}-{recipe_version}-{recipe_build_string}")
+    recipe_version, recipe_build_string = get_rendered_version(
+        package_name, recipe_subdir, build_environment, shared_config)
+    print(
+        f"Recipe version is: {package_name}-{recipe_version}-{recipe_build_string}")
 
     # Check our channel.  Did we already upload this version?
     if check_already_exists(package_name, recipe_version, recipe_build_string, shared_config):
-        print(f"Found {package_name}-{recipe_version}-{recipe_build_string} on {shared_config['destination-channel']}, skipping build.")
+        print(
+            f"Found {package_name}-{recipe_version}-{recipe_build_string} on {shared_config['destination-channel']}, skipping build.")
     else:
         # Not on our channel.  Build and upload.
-        build_recipe(package_name, recipe_subdir, conda_build_flags, build_environment, shared_config)
-        upload_package(package_name, recipe_version, recipe_build_string, shared_config)
+        build_recipe(package_name, recipe_subdir, conda_build_flags,
+                     build_environment, shared_config)
+        upload_package(package_name, recipe_version,
+                       recipe_build_string, shared_config)
 
 
 def checkout_recipe_repo(recipe_repo, tag):
@@ -232,18 +258,20 @@ def checkout_recipe_repo(recipe_repo, tag):
     """
     try:
         repo_name = splitext(basename(recipe_repo))[0]
-    
+
         cwd = abspath(os.getcwd())
-        if not exists( repo_name ):
+        if not exists(repo_name):
             # assuming url of the form github.com/remote-name/myrepo[.git]
             remote_name = recipe_repo.split('/')[-2]
-            subprocess.check_call(f"git clone -o {remote_name} {recipe_repo}", shell=True)
+            subprocess.check_call(
+                f"git clone -o {remote_name} {recipe_repo}", shell=True)
             os.chdir(repo_name)
         else:
             # The repo is already cloned in the cache,
             # but which remote do we want to fetch from?
             os.chdir(repo_name)
-            remote_output = subprocess.check_output("git remote -v", shell=True).decode('utf-8').strip()
+            remote_output = subprocess.check_output(
+                "git remote -v", shell=True).decode('utf-8').strip()
             remotes = {}
             for line in remote_output.split('\n'):
                 name, url, role = line.split()
@@ -255,17 +283,20 @@ def checkout_recipe_repo(recipe_repo, tag):
                 # Repo existed locally, but was missing the desired remote.
                 # Add it.
                 remote_name = recipe_repo.split('/')[-2]
-                subprocess.check_call(f"git remote add {remote_name} {recipe_repo}", shell=True)
-                    
+                subprocess.check_call(
+                    f"git remote add {remote_name} {recipe_repo}", shell=True)
+
             subprocess.check_call(f"git fetch {remote_name}", shell=True)
-    
+
         print(f"Checking out {tag} of {repo_name} into {cwd}...")
         subprocess.check_call(f"git checkout {tag}", shell=True)
-        subprocess.check_call(f"git pull --ff-only {remote_name} {tag}", shell=True)
-        subprocess.check_call(f"git submodule update --init --recursive", shell=True)
+        subprocess.check_call(
+            f"git pull --ff-only {remote_name} {tag}", shell=True)
+        subprocess.check_call(
+            f"git submodule update --init --recursive", shell=True)
     except subprocess.CalledProcessError:
         raise RuntimeError(f"Failed to clone or update the repository: {recipe_repo}\n"
-                            "Double-check the repo url, or delete your repo cache and try again.")
+                           "Double-check the repo url, or delete your repo cache and try again.")
 
     print(f"Recipe checked out at tag: {tag}")
     print("Most recent commit:")
@@ -283,22 +314,25 @@ def get_rendered_version(package_name, recipe_subdir, build_environment, shared_
     print(f"Rendering recipe in {recipe_subdir}...")
     temp_meta_file = tempfile.NamedTemporaryFile(delete=False)
     temp_meta_file.close()
-    render_cmd = ( f"conda render"
-                   f" --python={shared_config['python']}"
-                   f" --numpy={shared_config['numpy']}"
-                   f" {recipe_subdir}"
-                   f" {shared_config['source-channel-string']}"
-                   f" --file {temp_meta_file.name}" )
+    render_cmd = (f"conda render"
+                  f" --python={shared_config['python']}"
+                  f" --numpy={shared_config['numpy']}"
+                  f" {recipe_subdir}"
+                  f" {shared_config['source-channel-string']}"
+                  f" --file {temp_meta_file.name}")
     print('\t' + render_cmd)
-    rendered_meta_text = subprocess.check_output(render_cmd, env=build_environment, shell=True).decode()
+    rendered_meta_text = subprocess.check_output(
+        render_cmd, env=build_environment, shell=True).decode()
     meta = yaml.load(open(temp_meta_file.name, 'r'))
     os.remove(temp_meta_file.name)
 
     if meta['package']['name'] != package_name:
-        raise RuntimeError(f"Recipe for package '{package_name}' has unexpected name: '{meta['package']['name']}'")
-    
+        raise RuntimeError(
+            "Recipe for package '{package_name}' has unexpected name: '{meta['package']['name']}'")
+
     render_cmd += " --output"
-    rendered_filename = subprocess.check_output(render_cmd, env=build_environment, shell=True).decode()
+    rendered_filename = subprocess.check_output(
+        render_cmd, env=build_environment, shell=True).decode()
     build_string_with_hash = rendered_filename.split('-')[-1].split('.')[0]
 
     return meta['package']['version'], build_string_with_hash
@@ -310,15 +344,16 @@ def check_already_exists(package_name, recipe_version, recipe_build_string, shar
     ilastik-forge channel with the given version and build string.
     """
     print(f"Searching channel: {shared_config['destination-channel']}")
-    search_cmd = f"conda search --json  --full-name --override-channels --channel={shared_config['destination-channel']} {package_name}"  
+    search_cmd = f"conda search --json  --full-name --override-channels --channel={shared_config['destination-channel']} {package_name}"
     print('\t' + search_cmd)
     try:
-        search_results_text = subprocess.check_output( search_cmd, shell=True ).decode()
+        search_results_text = subprocess.check_output(
+            search_cmd, shell=True).decode()
     except Exception:
         # In certain scenarios, the search can crash.
         # In such cases, the package wasn't there anyway, so return False
         return False
-    
+
     search_results = json.loads(search_results_text)
 
     if package_name not in search_results:
@@ -336,11 +371,11 @@ def build_recipe(package_name, recipe_subdir, build_flags, build_environment, sh
     Build the recipe.
     """
     print(f"Building {package_name}")
-    build_cmd = ( f"conda build {build_flags}"
-                  f" --python={shared_config['python']}"
-                  f" --numpy={shared_config['numpy']}"
-                  f" {shared_config['source-channel-string']}"
-                  f" {recipe_subdir}" )
+    build_cmd = (f"conda build {build_flags}"
+                 f" --python={shared_config['python']}"
+                 f" --numpy={shared_config['numpy']}"
+                 f" {shared_config['source-channel-string']}"
+                 f" {recipe_subdir}")
     print('\t' + build_cmd)
     try:
         subprocess.check_call(build_cmd, env=build_environment, shell=True)
@@ -361,7 +396,7 @@ def upload_package(package_name, recipe_version, recipe_build_string, shared_con
         pkg_file_path = BUILD_PKG_DIR / 'noarch' / pkg_file_name
     if not os.path.exists(pkg_file_path):
         raise RuntimeError(f"Can't find built package: {pkg_file_name}")
-    
+
     upload_cmd = f"anaconda upload -u {shared_config['destination-channel']} {pkg_file_path}"
     print(f"Uploading {pkg_file_name}")
     print(upload_cmd)
@@ -369,9 +404,9 @@ def upload_package(package_name, recipe_version, recipe_build_string, shared_con
 
 
 if __name__ == "__main__":
-#     import os
-#     from os.path import dirname
-#     os.chdir(dirname(__file__))
-#     sys.argv.append('recipe-specs.yaml')
+    #     import os
+    #     from os.path import dirname
+    #     os.chdir(dirname(__file__))
+    #     sys.argv.append('recipe-specs.yaml')
 
-    sys.exit( main() )
+    sys.exit(main())
