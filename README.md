@@ -31,7 +31,7 @@ Inside the docker container, you might want to install some necessities:
 yum install vim 
 yum install java-1.8.0-openjdk-headless.x86_64 unzip # (java and unzip needed for CPLEX installer)
 conda install cmake
-conda install conda-build --overwrite-channels -c defaults # to get the latest conda-build
+conda install conda-build --override-channels -c defaults # to get the latest conda-build
 ```
 
 ### MacOS:
