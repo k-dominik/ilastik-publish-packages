@@ -198,4 +198,22 @@ recipe-specs:
       recipe-subdir: ilastik-dependencies
       environment:
         WITH_SOLVERS: 1
+       
+############################################################################
+##
+## Windows installer
+##
+    - name: ilastik-exe
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: master
+      recipe-subdir: windows-installer/ilastik-exe
+      build-on:
+       - win
+
+    - name: ilastik-package
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: master
+      recipe-subdir: windows-installer/ilastik-package
+      build-on:
+       - win
 
