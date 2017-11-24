@@ -78,7 +78,7 @@ To build the tracking and multicut C++ packages with all features (listed in `il
 
 ## Building packages:
 
-You need to be logged in to your https://anaconda.org account by running `anaconda login`. Then you can build the packages by running the commands below:
+Run `conda install anaconda-client`. You need to be logged in to your https://anaconda.org account by running `anaconda login`. Then you can build the packages by running the commands below:
 
 ```bash
 git clone https://github.com/ilastik/ilastik-publish-packages
