@@ -43,6 +43,12 @@ recipe-specs:
       tag: master
       recipe-subdir: yapsy
  
+# We don't currently need this dependency
+#    - name: marching_cubes
+#      recipe-repo: https://github.com/ilastik/marching_cubes
+#      tag: master
+#      recipe-subdir: conda-recipe
+
     - name: hytra
       recipe-repo: https://github.com/ilastik/hytra
       tag: master
