@@ -127,9 +127,15 @@ recipe-specs:
     recipe-subdir: basholeveldb
 
   - name: dvid
+    # From pre-built distribution
     recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
-    tag:  master
     recipe-subdir: dvid
+    tag: master
+    
+    # From source with a conda-recipe
+    #recipe-repo: https://github.com/stuarteberg/dvid
+    #recipe-subdir: conda-recipe
+    #tag: conda-recipe
 
   - name: diced
     recipe-repo: https://github.com/janelia-flyem/diced
