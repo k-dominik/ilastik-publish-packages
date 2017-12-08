@@ -263,7 +263,6 @@ def checkout_recipe_repo(recipe_repo, tag):
         subprocess.check_call(f"git checkout {tag}", shell=True)
         subprocess.check_call(f"git pull --ff-only {remote_name} {tag}", shell=True)
         subprocess.check_call(f"git submodule update --init --recursive", shell=True)
-        os.chdir(cwd)
     except subprocess.CalledProcessError:
         raise RuntimeError(f"Failed to clone or update the repository: {recipe_repo}\n"
                             "Double-check the repo url, or delete your repo cache and try again.")
@@ -271,6 +270,7 @@ def checkout_recipe_repo(recipe_repo, tag):
     print(f"Recipe checked out at tag: {tag}")
     print("Most recent commit:")
     subprocess.call("git log -n1", shell=True)
+    os.chdir(cwd)
 
     return repo_name
 
