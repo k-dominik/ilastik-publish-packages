@@ -40,6 +40,7 @@ conda install conda-build --override-channels -c defaults # to get the latest co
 * Install the MacOS 10.9 SDK to build for older OS versions than your one from https://github.com/devernay/xcodelegacy by following their instructions.
 * Install [Miniconda](https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh) if you don't have it yet.
 * Install CMake, e.g. by `conda install cmake` or through `brew`.
+* Install `conda-build` (otherwise `conda render` won't work): `conda install conda-build`
 * Install the anaconda client for uploading packages to our `ilastik-forge` channel: `conda install anaconda-client` in your conda root environment
 
 ### Windows:
