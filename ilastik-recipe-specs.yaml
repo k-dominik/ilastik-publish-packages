@@ -98,6 +98,11 @@ recipe-specs:
       tag: master
       recipe-subdir: conda-recipe
 
+    - name: fastfilters
+      recipe-repo: https://github.com/ilastik/fastfilters
+      tag: devel
+      recipe-subdir: pkg/conda/fastfilters
+
     - name: nifty
       recipe-repo: https://github.com/chaubold/nifty
       tag: stacked_rag
@@ -105,11 +110,6 @@ recipe-specs:
       environment:
         WITH_CPLEX: 0
         WITH_GUROBI: 0
-    
-    - name: fastfilters
-      recipe-repo: https://github.com/ilastik/fastfilters
-      tag: devel
-      recipe-subdir: pkg/conda/fastfilters
 
     - name: ilastik-meta
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
