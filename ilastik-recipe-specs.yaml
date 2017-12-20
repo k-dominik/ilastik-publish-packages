@@ -194,7 +194,7 @@ recipe-specs:
     - name: macholib
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
       tag: master
-      recipe-subdir: osx-packages/modulegraph
+      recipe-subdir: osx-packages/macholib
       build-on:
         - osx
 
