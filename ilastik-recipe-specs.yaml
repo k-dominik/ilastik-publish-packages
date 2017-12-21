@@ -23,6 +23,16 @@ recipe-specs:
         - win
         - osx
 
+    # FIXME: We temporarily build our own windows hdf5 package, because of
+    # insufficient unicode support of release version 1.10.1.
+    - name: hdf5
+      build-on:
+        - win
+      recipe-repo: https://github.com/ilastik/hdf5-feedstock
+      tag: utf-8-support
+      recipe-subdir: recipe
+
+
     # FIXME: We would like to use conda-forge's package for vigra,
     # but it doesn't build WITH_LEMON yet.
     - name: vigra
