@@ -161,6 +161,9 @@ recipe-specs:
         GUROBI_ROOT_DIR: /opt/gurobi751/linux64
 
     - name: multi-hypotheses-tracking-with-gurobi
+      build-on:
+        - linux
+        - osx
       recipe-repo: https://github.com/ilastik/multiHypothesesTracking
       tag: master
       recipe-subdir: conda-recipe
@@ -170,7 +173,23 @@ recipe-specs:
         WITH_GUROBI: 1
         GUROBI_ROOT_DIR: /opt/gurobi751/linux64
 
+    - name: multi-hypotheses-tracking-with-gurobi
+      build-on:
+        - win
+      recipe-repo: https://github.com/ilastik/multiHypothesesTracking
+      tag: master
+      recipe-subdir: conda-recipe
+      conda-build-flags: --no-test
+      environment:
+        WITH_CPLEX: 0
+        WITH_GUROBI: 1
+        GUROBI_ROOT_DIR: /gurobi751/win64
+        GUROBI_LIB_WIN: /gurobi751/win64/lib/gurobi75.lib
+
     - name: multi-hypotheses-tracking-with-cplex
+      build-on:
+        - linux
+        - osx
       recipe-repo: https://github.com/ilastik/multiHypothesesTracking
       tag: master
       recipe-subdir: conda-recipe
@@ -179,7 +198,21 @@ recipe-specs:
         WITH_GUROBI: 0
         CPLEX_ROOT_DIR: /opt/cplex
 
+    - name: multi-hypotheses-tracking-with-cplex
+      build-on:
+        - win
+      recipe-repo: https://github.com/ilastik/multiHypothesesTracking
+      tag: master
+      recipe-subdir: conda-recipe
+      environment:
+        WITH_CPLEX: 1
+        WITH_GUROBI: 0
+        CPLEX_WIN_VERSION: 1271
+
     - name: nifty-with-gurobi
+      build-on:
+        - linux
+        - osx
       recipe-repo: https://github.com/chaubold/nifty
       tag: stacked_rag
       recipe-subdir: conda-recipe
@@ -187,18 +220,18 @@ recipe-specs:
         WITH_CPLEX: 0
         WITH_GUROBI: 1
         GUROBI_ROOT_DIR: /opt/gurobi751/linux64
-        GUROBI_LIB_WIN: C:\gurobi751\win64\lib\libgurobi75.lib
 
-    - name: nifty-with-cplex
+    - name: nifty-with-gurobi
       build-on:
         - win
       recipe-repo: https://github.com/chaubold/nifty
       tag: stacked_rag
       recipe-subdir: conda-recipe
       environment:
-        WITH_CPLEX: 1
-        WITH_GUROBI: 0
-        CPLEX_WIN_VERSION: 1271
+        WITH_CPLEX: 0
+        WITH_GUROBI: 1
+        GUROBI_ROOT_DIR: /gurobi751/win64
+        GUROBI_LIB_WIN: /gurobi751/win64/lib/gurobi75.lib
 
     - name: nifty-with-cplex
       build-on:
@@ -212,13 +245,24 @@ recipe-specs:
         WITH_GUROBI: 0
         CPLEX_ROOT_DIR: /opt/cplex
 
+    - name: nifty-with-cplex
+      build-on:
+        - win
+      recipe-repo: https://github.com/chaubold/nifty
+      tag: stacked_rag
+      recipe-subdir: conda-recipe
+      environment:
+        WITH_CPLEX: 1
+        WITH_GUROBI: 0
+        CPLEX_WIN_VERSION: 1271
+
     - name: ilastik-dependencies
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
       tag: master
       recipe-subdir: ilastik-dependencies
       environment:
         WITH_SOLVERS: 1
-       
+
 ############################################################################
 ##
 ## Windows installer
