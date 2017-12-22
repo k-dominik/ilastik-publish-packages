@@ -120,7 +120,7 @@ recipe-specs:
       recipe-subdir: pkg/conda/fastfilters
 
     - name: nifty
-      recipe-repo: https://github.com/chaubold/nifty
+      recipe-repo: https://github.com/ilastik/nifty
       tag: stacked_rag
       recipe-subdir: conda-recipe
       environment:
@@ -223,7 +223,7 @@ recipe-specs:
       build-on:
         - linux
         - osx
-      recipe-repo: https://github.com/chaubold/nifty
+      recipe-repo: https://github.com/ilastik/nifty
       tag: stacked_rag
       recipe-subdir: conda-recipe
       environment:
@@ -234,7 +234,7 @@ recipe-specs:
     - name: nifty-with-gurobi
       build-on:
         - win
-      recipe-repo: https://github.com/chaubold/nifty
+      recipe-repo: https://github.com/ilastik/nifty
       tag: stacked_rag
       recipe-subdir: conda-recipe
       environment:
@@ -247,7 +247,7 @@ recipe-specs:
       build-on:
         - linux
         - osx
-      recipe-repo: https://github.com/chaubold/nifty
+      recipe-repo: https://github.com/ilastik/nifty
       tag: stacked_rag
       recipe-subdir: conda-recipe
       environment:
@@ -258,7 +258,7 @@ recipe-specs:
     - name: nifty-with-cplex
       build-on:
         - win
-      recipe-repo: https://github.com/chaubold/nifty
+      recipe-repo: https://github.com/ilastik/nifty
       tag: stacked_rag
       recipe-subdir: conda-recipe
       environment:
@@ -273,10 +273,10 @@ recipe-specs:
       environment:
         WITH_SOLVERS: 1
 
-############################################################################
-##
-## Windows installer
-##
+###########################################################################
+#
+# Windows installer
+#
     - name: ilastik-exe
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
       tag: master
