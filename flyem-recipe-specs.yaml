@@ -126,6 +126,12 @@ recipe-specs:
     tag:  master
     recipe-subdir: basholeveldb
 
+  - name: dvid-web-console
+    # From pre-built distribution
+    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    recipe-subdir: dvid-web-console
+    tag: master
+    
   - name: dvid
     # From pre-built distribution
     recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
