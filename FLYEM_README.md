@@ -23,8 +23,11 @@ cd flyem-publish-packages
 # Activate the root conda environment. Must be Python 3.6 
 source activate root
 
+# Make sure you have a very recent version of conda-build
+conda install --override-channels -c defaults conda-build
+
 # Build/upload all FlyEM dependencies
-python build-recipes.py flyem-recipe-specs.yaml
+./build-recipes.py flyem-recipe-specs.yaml
 ```
 
 To add a new package, simply add a new item to `flyem-recipe-specs.yaml`.
