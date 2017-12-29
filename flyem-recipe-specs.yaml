@@ -133,16 +133,10 @@ recipe-specs:
     tag: master
     
   - name: dvid
-    # From pre-built distribution
-    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
-    recipe-subdir: dvid
+    recipe-repo: https://github.com/janelia-flyem/dvid
+    recipe-subdir: scripts/conda-recipe
     tag: master
     
-    # From source with a conda-recipe
-    #recipe-repo: https://github.com/stuarteberg/dvid
-    #recipe-subdir: conda-recipe
-    #tag: conda-recipe
-
   - name: diced
     recipe-repo: https://github.com/janelia-flyem/diced
     tag:  master
