@@ -3,9 +3,9 @@ shared-config:
     numpy: '1.12'
     repo-cache-dir: ./repo-cache # Relative to this yaml file's directory.
     source-channels:
-        - ilastik-forge
+        - kdominik
         - conda-forge
-    destination-channel: ilastik-forge
+    destination-channel: kdominik
 
 recipe-specs:
 
@@ -168,7 +168,7 @@ recipe-specs:
       tag: master
       recipe-subdir: gurobi-symlink
       environment:
-        GUROBI_ROOT_DIR: /opt/gurobi751/linux64
+        GUROBI_ROOT_DIR: /opt/gurobi752/linux64
 
     - name: multi-hypotheses-tracking-with-gurobi
       build-on:
@@ -181,7 +181,7 @@ recipe-specs:
       environment:
         WITH_CPLEX: 0
         WITH_GUROBI: 1
-        GUROBI_ROOT_DIR: /opt/gurobi751/linux64
+        GUROBI_ROOT_DIR: /opt/gurobi752/linux64
 
     - name: multi-hypotheses-tracking-with-gurobi
       build-on:
@@ -229,7 +229,7 @@ recipe-specs:
       environment:
         WITH_CPLEX: 0
         WITH_GUROBI: 1
-        GUROBI_ROOT_DIR: /opt/gurobi751/linux64
+        GUROBI_ROOT_DIR: /opt/gurobi752/linux64
 
     - name: nifty-with-gurobi
       build-on:
