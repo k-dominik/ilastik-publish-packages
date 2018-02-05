@@ -93,16 +93,16 @@ recipe-specs:
       tag: master
       recipe-subdir: conda-recipe
 
-    - name: pytiff
-      recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: master
-      recipe-subdir: pytiff
-
     # tifffile is available from conda-forge, but we need an old version of it...
     - name: tifffile
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
       tag: master
       recipe-subdir: tifffile
+
+    - name: pytiff
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: master
+      recipe-subdir: pytiff
 
     - name: numpy-allocation-tracking
       recipe-repo: https://github.com/ilastik/numpy-allocation-tracking
