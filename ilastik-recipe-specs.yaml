@@ -64,9 +64,19 @@ recipe-specs:
       tag: master
       recipe-subdir: conda-recipe
 
+    # Need to build libitk ourselves in order to update dependencies
+    # in particular, libitk fixes hdf5
+    - name: libitk
+      recipe-repo: https://github.com/k-dominik/libitk-feedstock
+      recipe-subdir: recipe
+      tag: k-new-hdf5-version
+      build-on:
+        - linux
+        - osx
+
     - name: iiboost
-      recipe-repo: https://github.com/stuarteberg/iiboost
-      tag: clang
+      recipe-repo: https://github.com/k-dominik/iiboost
+      tag: no-restrict-hdf5-version
       recipe-subdir: conda-recipe
       build-on:
         - linux
