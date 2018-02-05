@@ -141,8 +141,8 @@ recipe-specs:
        - osx
 
     - name: ilastik-dependencies-no-solvers
-      recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: master
+      recipe-repo: https://github.com/k-dominik/ilastik-build-conda
+      tag: upgrade_numpy
       recipe-subdir: ilastik-dependencies
       environment:
         WITH_SOLVERS: 0
@@ -267,8 +267,8 @@ recipe-specs:
         CPLEX_WIN_VERSION: 1271
 
     - name: ilastik-dependencies
-      recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: master
+      recipe-repo: https://github.com/k-dominik/ilastik-build-conda
+      tag: upgrade_numpy
       recipe-subdir: ilastik-dependencies
       environment:
         WITH_SOLVERS: 1
