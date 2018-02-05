@@ -1,6 +1,6 @@
 shared-config:
     python: '3.6'
-    numpy: '1.12'
+    numpy: '1.14'
     repo-cache-dir: ./repo-cache # Relative to this yaml file's directory.
     source-channels:
         - kdominik
