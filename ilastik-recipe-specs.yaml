@@ -4,6 +4,7 @@ shared-config:
     repo-cache-dir: ./repo-cache # Relative to this yaml file's directory.
     source-channels:
         - kdominik
+#        - ilastik-forge
         - conda-forge
     destination-channel: kdominik
 
@@ -11,7 +12,7 @@ recipe-specs:
 
     - name: lemon
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: master
+      tag: use-system-compiler-linux
       recipe-subdir: lemon
 
       # Optional specs
@@ -37,7 +38,7 @@ recipe-specs:
     # but it doesn't build WITH_LEMON yet.
     - name: vigra
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: master
+      tag: use-system-compiler-linux
       recipe-subdir: vigra
       environment:
         VIGRA_SKIP_TESTS: 0
@@ -45,7 +46,7 @@ recipe-specs:
 
     - name: dpct
       recipe-repo: https://github.com/ilastik/dpct
-      tag: master
+      tag: use-system-compiler-linux
       recipe-subdir: conda-recipe
 
     - name: yapsy
@@ -56,7 +57,7 @@ recipe-specs:
 # We don't currently need this dependency
 #    - name: marching_cubes
 #      recipe-repo: https://github.com/ilastik/marching_cubes
-#      tag: master
+#      tag: use-system-compiler-linux
 #      recipe-subdir: conda-recipe
 
     - name: hytra
@@ -65,8 +66,8 @@ recipe-specs:
       recipe-subdir: conda-recipe
 
     - name: iiboost
-      recipe-repo: https://github.com/stuarteberg/iiboost
-      tag: clang
+      recipe-repo: https://github.com/k-dominik/iiboost
+      tag: use-system-compiler-linux
       recipe-subdir: conda-recipe
       build-on:
         - linux
@@ -80,7 +81,7 @@ recipe-specs:
 
     - name: ilastiktools
       recipe-repo: https://github.com/ilastik/ilastiktools
-      tag: pybind11
+      tag: use-system-compiler-linux
       recipe-subdir: conda-recipe
 
     - name: ilastikrag
@@ -93,16 +94,21 @@ recipe-specs:
       tag: master
       recipe-subdir: conda-recipe
 
-    - name: pytiff
-      recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: master
-      recipe-subdir: pytiff
+#    - name: pytiff
+#      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+#      tag: master
+#      recipe-subdir: pytiff
 
     # tifffile is available from conda-forge, but we need an old version of it...
     - name: tifffile
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
       tag: master
       recipe-subdir: tifffile
+
+    - name: pytiff
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: master
+      recipe-subdir: pytiff
 
     - name: numpy-allocation-tracking
       recipe-repo: https://github.com/ilastik/numpy-allocation-tracking
@@ -116,16 +122,13 @@ recipe-specs:
 
     - name: fastfilters
       recipe-repo: https://github.com/ilastik/fastfilters
-      tag: devel
+      tag: use-system-compiler-linux
       recipe-subdir: pkg/conda/fastfilters
 
     - name: nifty
-      recipe-repo: https://github.com/ilastik/nifty
-      tag: stacked_rag
+      recipe-repo: https://github.com/k-dominik/nifty
+      tag: use-system-compiler-linux
       recipe-subdir: conda-recipe
-      environment:
-        WITH_CPLEX: 0
-        WITH_GUROBI: 0
 
     - name: ilastik-meta
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
@@ -151,109 +154,109 @@ recipe-specs:
 ##
 ## All the following packages need solvers, or are only needed if solvers are present
 ##
-    - name: opengm-structured-learning-headers
-      recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: master
-      recipe-subdir: opengm-structured-learning-headers
+#    - name: opengm-structured-learning-headers
+#      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+#      tag: master
+#      recipe-subdir: opengm-structured-learning-headers
 
-    - name: cplex-shared
-      recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: master
-      recipe-subdir: cplex-shared
-      environment:
-        CPLEX_ROOT_DIR: /opt/cplex
+#    - name: cplex-shared
+#      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+#      tag: master
+#      recipe-subdir: cplex-shared
+#      environment:
+#        CPLEX_ROOT_DIR: /opt/cplex
 
-    - name: gurobi-symlink
-      recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: master
-      recipe-subdir: gurobi-symlink
-      environment:
-        GUROBI_ROOT_DIR: /opt/gurobi752/linux64
+#    - name: gurobi-symlink
+#      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+#      tag: master
+#      recipe-subdir: gurobi-symlink
+#      environment:
+#        GUROBI_ROOT_DIR: /opt/gurobi752/linux64
 
-    - name: multi-hypotheses-tracking-with-gurobi
-      build-on:
-        - linux
-        - osx
-      recipe-repo: https://github.com/ilastik/multiHypothesesTracking
-      tag: master
-      recipe-subdir: conda-recipe
-      conda-build-flags: --no-test
-      environment:
-        WITH_CPLEX: 0
-        WITH_GUROBI: 1
-        GUROBI_ROOT_DIR: /opt/gurobi752/linux64
+#    - name: multi-hypotheses-tracking-with-gurobi
+#      build-on:
+#        - linux
+#        - osx
+#      recipe-repo: https://github.com/ilastik/multiHypothesesTracking
+#      tag: master
+#      recipe-subdir: conda-recipe
+#      conda-build-flags: --no-test
+#      environment:
+#        WITH_CPLEX: 0
+#        WITH_GUROBI: 1
+#        GUROBI_ROOT_DIR: /opt/gurobi752/linux64
 
-    - name: multi-hypotheses-tracking-with-gurobi
+#    - name: multi-hypotheses-tracking-with-gurobi
+#      build-on:
+#        - win
+#      recipe-repo: https://github.com/ilastik/multiHypothesesTracking
+#      tag: master
+#      recipe-subdir: conda-recipe
+#      conda-build-flags: --no-test
+#      environment:
+#        WITH_CPLEX: 0
+#        WITH_GUROBI: 1
+#        GUROBI_ROOT_DIR: /gurobi751/win64
+#        GUROBI_LIB_WIN: /gurobi751/win64/lib/gurobi75.lib
+
+#    - name: multi-hypotheses-tracking-with-cplex
+#      build-on:
+#        - linux
+#        - osx
+#      recipe-repo: https://github.com/ilastik/multiHypothesesTracking
+#      tag: master
+#      recipe-subdir: conda-recipe
+#      environment:
+#        WITH_CPLEX: 1
+#        WITH_GUROBI: 0
+#        CPLEX_ROOT_DIR: /opt/cplex
+
+#    - name: multi-hypotheses-tracking-with-cplex
+#      build-on:
+#        - win
+#      recipe-repo: https://github.com/ilastik/multiHypothesesTracking
+#      tag: master
+#      recipe-subdir: conda-recipe
+#      environment:
+#        WITH_CPLEX: 1
+#        WITH_GUROBI: 0
+#        CPLEX_WIN_VERSION: 1271
+
+#    - name: nifty-with-gurobi
+#      build-on:
+#        - linux
+#        - osx
+#      recipe-repo: https://github.com/ilastik/nifty
+#      tag: stacked_rag
+#      recipe-subdir: conda-recipe
+#      environment:
+#        WITH_CPLEX: 0
+#        WITH_GUROBI: 1
+#        GUROBI_ROOT_DIR: /opt/gurobi752/linux64
+
+    - name: nifty-with-gurobi
       build-on:
         - win
-      recipe-repo: https://github.com/ilastik/multiHypothesesTracking
-      tag: master
+      recipe-repo: https://github.com/ilastik/nifty
+      tag: stacked_rag
       recipe-subdir: conda-recipe
-      conda-build-flags: --no-test
       environment:
         WITH_CPLEX: 0
         WITH_GUROBI: 1
         GUROBI_ROOT_DIR: /gurobi751/win64
         GUROBI_LIB_WIN: /gurobi751/win64/lib/gurobi75.lib
 
-    - name: multi-hypotheses-tracking-with-cplex
-      build-on:
-        - linux
-        - osx
-      recipe-repo: https://github.com/ilastik/multiHypothesesTracking
-      tag: master
-      recipe-subdir: conda-recipe
-      environment:
-        WITH_CPLEX: 1
-        WITH_GUROBI: 0
-        CPLEX_ROOT_DIR: /opt/cplex
-
-    - name: multi-hypotheses-tracking-with-cplex
-      build-on:
-        - win
-      recipe-repo: https://github.com/ilastik/multiHypothesesTracking
-      tag: master
-      recipe-subdir: conda-recipe
-      environment:
-        WITH_CPLEX: 1
-        WITH_GUROBI: 0
-        CPLEX_WIN_VERSION: 1271
-
-    - name: nifty-with-gurobi
-      build-on:
-        - linux
-        - osx
-      recipe-repo: https://github.com/ilastik/nifty
-      tag: stacked_rag
-      recipe-subdir: conda-recipe
-      environment:
-        WITH_CPLEX: 0
-        WITH_GUROBI: 1
-        GUROBI_ROOT_DIR: /opt/gurobi752/linux64
-
-    - name: nifty-with-gurobi
-      build-on:
-        - win
-      recipe-repo: https://github.com/ilastik/nifty
-      tag: stacked_rag
-      recipe-subdir: conda-recipe
-      environment:
-        WITH_CPLEX: 0
-        WITH_GUROBI: 1
-        GUROBI_ROOT_DIR: /gurobi751/win64
-        GUROBI_LIB_WIN: /gurobi751/win64/lib/gurobi75.lib
-
-    - name: nifty-with-cplex
-      build-on:
-        - linux
-        - osx
-      recipe-repo: https://github.com/ilastik/nifty
-      tag: stacked_rag
-      recipe-subdir: conda-recipe
-      environment:
-        WITH_CPLEX: 1
-        WITH_GUROBI: 0
-        CPLEX_ROOT_DIR: /opt/cplex
+#    - name: nifty-with-cplex
+#      build-on:
+#        - linux
+#        - osx
+#      recipe-repo: https://github.com/ilastik/nifty
+#      tag: stacked_rag
+#      recipe-subdir: conda-recipe
+#      environment:
+#        WITH_CPLEX: 1
+#        WITH_GUROBI: 0
+#        CPLEX_ROOT_DIR: /opt/cplex
 
     - name: nifty-with-cplex
       build-on:
@@ -266,12 +269,12 @@ recipe-specs:
         WITH_GUROBI: 0
         CPLEX_WIN_VERSION: 1271
 
-    - name: ilastik-dependencies
-      recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: master
-      recipe-subdir: ilastik-dependencies
-      environment:
-        WITH_SOLVERS: 1
+#    - name: ilastik-dependencies
+#      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+#      tag: master
+#      recipe-subdir: ilastik-dependencies
+#      environment:
+#        WITH_SOLVERS: 1
 
 ###########################################################################
 #

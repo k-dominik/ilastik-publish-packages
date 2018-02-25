@@ -328,7 +328,7 @@ def get_rendered_version(package_name, recipe_subdir, build_environment, shared_
 
     if meta['package']['name'] != package_name:
         raise RuntimeError(
-            "Recipe for package '{package_name}' has unexpected name: '{meta['package']['name']}'")
+            f"Recipe for package '{package_name}' has unexpected name: '{meta['package']['name']}'")
 
     render_cmd += " --output"
     rendered_filename = subprocess.check_output(
