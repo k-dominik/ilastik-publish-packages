@@ -57,6 +57,11 @@ recipe-specs:
     tag: master
     recipe-subdir: conda-recipe
 
+  - name: draco
+    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    tag: master
+    recipe-subdir: draco
+
   - name: dvidutils
     recipe-repo: https://github.com/stuarteberg/dvidutils
     tag: master
@@ -151,11 +156,6 @@ recipe-specs:
     recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
     tag: master
     recipe-subdir: fq-mesh-simplification
-
-  - name: draco
-    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
-    tag: master
-    recipe-subdir: draco
 
   - name: vol2mesh
     recipe-repo: https://github.com/janelia-flyem/vol2mesh
