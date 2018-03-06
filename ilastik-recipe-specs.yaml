@@ -63,15 +63,26 @@ recipe-specs:
       recipe-subdir: yapsy
 
 # We don't currently need this dependency
-#    - name: marching_cubes
-#      recipe-repo: https://github.com/ilastik/marching_cubes
-#      tag: use-system-compiler-linux
-#      recipe-subdir: conda-recipe
+    - name: marching_cubes
+      recipe-repo: https://github.com/ilastik/marching_cubes
+      tag: use-system-compiler-linux
+      recipe-subdir: conda-recipe
 
     - name: hytra
       recipe-repo: https://github.com/ilastik/hytra
       tag: master
       recipe-subdir: conda-recipe
+
+    # Need to build libitk ourselves in order to update dependencies
+    # in particular, libitk fixes hdf5
+    - name: libitk
+      recipe-repo: https://github.com/k-dominik/libitk-feedstock
+      recipe-subdir: recipe
+      tag: k-new-hdf5-version
+      build-on:
+        - linux
+        - osx
+
 
     - name: iiboost
       recipe-repo: https://github.com/k-dominik/iiboost
@@ -135,8 +146,10 @@ recipe-specs:
 
     - name: nifty
       recipe-repo: https://github.com/k-dominik/nifty
-      tag: use-system-compiler-linux
+      tag: enh-allow-old-abi-compilation
       recipe-subdir: conda-recipe
+      environment:
+        DO_NOT_BUILD_WITH_CXX11_ABI: 1
 
     - name: ilastik-meta
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
