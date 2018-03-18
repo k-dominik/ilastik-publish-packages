@@ -121,6 +121,11 @@ recipe-specs:
     tag:  upgrade-boost # Use boost-1.64
     recipe-subdir: conda-recipe
 
+  - name: pyspark-flame
+    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    tag:  master
+    recipe-subdir: pyspark-flame
+
   - name: dvidsparkservices
     recipe-repo: https://github.com/janelia-flyem/DVIDSparkServices
     tag:  master
