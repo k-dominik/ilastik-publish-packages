@@ -3,10 +3,9 @@ shared-config:
     numpy: '1.12'
     repo-cache-dir: ./repo-cache # Relative to this yaml file's directory.
     source-channels:
-        - kdominik
-#        - ilastik-forge
+        - ilastik-forge
         - conda-forge
-    destination-channel: kdominik
+    destination-channel: ilastik-forge
 
 # Some notes on the used environment variables:
 # * DO_NOT_BUILD_WITH_CXX11_ABI: Only applies to linux: should be 1 for all
@@ -28,7 +27,7 @@ recipe-specs:
 
     - name: lemon
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: use-system-compiler-linux
+      tag: master
       recipe-subdir: lemon
 
       # Optional specs
@@ -54,7 +53,7 @@ recipe-specs:
     # but it doesn't build WITH_LEMON yet.
     - name: vigra
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: use-system-compiler-linux
+      tag: master
       recipe-subdir: vigra
       environment:
         VIGRA_SKIP_TESTS: 0
@@ -63,7 +62,7 @@ recipe-specs:
 
     - name: dpct
       recipe-repo: https://github.com/ilastik/dpct
-      tag: use-system-compiler-linux
+      tag: master
       recipe-subdir: conda-recipe
       environment:
         DO_NOT_BUILD_WITH_CXX11_ABI: 1  # [linux]
@@ -75,7 +74,7 @@ recipe-specs:
 
     - name: marching_cubes
       recipe-repo: https://github.com/ilastik/marching_cubes
-      tag: use-system-compiler-linux
+      tag: master
       recipe-subdir: conda-recipe
       environment:
         DO_NOT_BUILD_WITH_CXX11_ABI: 1  # [linux]
@@ -115,7 +114,7 @@ recipe-specs:
 
     - name: ilastiktools
       recipe-repo: https://github.com/ilastik/ilastiktools
-      tag: use-system-compiler-linux
+      tag: pybind11
       recipe-subdir: conda-recipe
       environment:
         DO_NOT_BUILD_WITH_CXX11_ABI: 1  # [linux]
@@ -153,7 +152,7 @@ recipe-specs:
 
     - name: fastfilters
       recipe-repo: https://github.com/ilastik/fastfilters
-      tag: use-system-compiler-linux
+      tag: devel
       recipe-subdir: pkg/conda/fastfilters
       environment:
         DO_NOT_BUILD_WITH_CXX11_ABI: 1  # [linux]
@@ -213,7 +212,7 @@ recipe-specs:
         - linux
         - osx
       recipe-repo: https://github.com/ilastik/multiHypothesesTracking
-      tag: use-system-compiler-linux
+      tag: master
       recipe-subdir: conda-recipe
       conda-build-flags: --no-test
       environment:
@@ -240,7 +239,7 @@ recipe-specs:
         - linux
         - osx
       recipe-repo: https://github.com/ilastik/multiHypothesesTracking
-      tag: use-system-compiler-linux
+      tag: master
       recipe-subdir: conda-recipe
       environment:
         WITH_CPLEX: 1
@@ -275,8 +274,8 @@ recipe-specs:
     - name: nifty-with-gurobi
       build-on:
         - win
-      recipe-repo: https://github.com/ilastik/nifty
-      tag: stacked_rag
+      recipe-repo: https://github.com/k-dominik/nifty
+      tag: enh-conda-recipe
       recipe-subdir: conda-recipe
       environment:
         WITH_CPLEX: 0
@@ -300,8 +299,8 @@ recipe-specs:
     - name: nifty-with-cplex
       build-on:
         - win
-      recipe-repo: https://github.com/ilastik/nifty
-      tag: stacked_rag
+      recipe-repo: https://github.com/k-dominik/nifty
+      tag: enh-conda-recipe
       recipe-subdir: conda-recipe
       environment:
         WITH_CPLEX: 1
