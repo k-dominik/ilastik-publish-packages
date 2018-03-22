@@ -271,7 +271,6 @@ recipe-specs:
       recipe-subdir: conda-recipe
       environment:
         WITH_CPLEX: 1
-        WITH_GUROBI: 0
         CPLEX_ROOT_DIR: /opt/cplex
         DO_NOT_BUILD_WITH_CXX11_ABI: 1
 
@@ -283,8 +282,7 @@ recipe-specs:
       recipe-subdir: conda-recipe
       environment:
         WITH_CPLEX: 1
-        WITH_GUROBI: 0
-        CPLEX_WIN_VERSION: 1271
+        CPLEX_WIN_VERSION: 128
 
     - name: nifty-with-gurobi
       build-on:
@@ -294,7 +292,6 @@ recipe-specs:
       tag: enh-conda-recipe
       recipe-subdir: conda-recipe
       environment:
-        WITH_CPLEX: 0
         WITH_GUROBI: 1
         GUROBI_ROOT_DIR: /opt/gurobi752/linux64
         DO_NOT_BUILD_WITH_CXX11_ABI: 1
@@ -306,7 +303,6 @@ recipe-specs:
       tag: enh-conda-recipe
       recipe-subdir: conda-recipe
       environment:
-        WITH_CPLEX: 0
         WITH_GUROBI: 1
         GUROBI_ROOT_DIR: /gurobi751/win64
         GUROBI_LIB_WIN: /gurobi751/win64/lib/gurobi75.lib
@@ -320,7 +316,6 @@ recipe-specs:
       recipe-subdir: conda-recipe
       environment:
         WITH_CPLEX: 1
-        WITH_GUROBI: 0
         CPLEX_ROOT_DIR: /opt/cplex
         DO_NOT_BUILD_WITH_CXX11_ABI: 1
 
@@ -332,8 +327,7 @@ recipe-specs:
       recipe-subdir: conda-recipe
       environment:
         WITH_CPLEX: 1
-        WITH_GUROBI: 0
-        CPLEX_WIN_VERSION: 1271
+        CPLEX_WIN_VERSION: 128
 
     - name: ilastik-dependencies
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
