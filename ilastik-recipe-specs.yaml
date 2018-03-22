@@ -184,6 +184,34 @@ recipe-specs:
       environment:
         WITH_SOLVERS: 0
 
+    - name: altgraph
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: master
+      recipe-subdir: osx-packages/altgraph
+      build-on:
+        - osx
+
+    - name: macholib
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: master
+      recipe-subdir: osx-packages/macholib
+      build-on:
+        - osx
+
+    - name: modulegraph
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: master
+      recipe-subdir: osx-packages/modulegraph
+      build-on:
+        - osx
+
+    - name: py2app
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: master
+      recipe-subdir: osx-packages/py2app
+      build-on:
+        - osx
+
 ############################################################################
 ##
 ## All the following packages need solvers, or are only needed if solvers are present
