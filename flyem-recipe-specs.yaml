@@ -126,6 +126,12 @@ recipe-specs:
     tag:  master
     recipe-subdir: pyspark-flame
 
+  # Note: Uses GPLv3.  Can't be included in BSD-licensed code.
+  - name: graph-tool
+    recipe-repo: https://github.com/stuarteberg/graph-tool-feedstock
+    tag:  master
+    recipe-subdir: recipe
+
   - name: dvidsparkservices
     recipe-repo: https://github.com/janelia-flyem/DVIDSparkServices
     tag:  master
