@@ -132,6 +132,21 @@ recipe-specs:
     tag:  master
     recipe-subdir: recipe
 
+  - name: fastfilters
+    recipe-repo: https://github.com/stuarteberg/fastfilters
+    tag:  fix-cmake-findpython
+    recipe-subdir: pkg/conda/fastfilters
+
+  - name: nifty
+    recipe-repo: https://github.com/stuarteberg/nifty
+    tag:  flyem
+    recipe-subdir: conda-recipe
+
+  - name: neuclease
+    recipe-repo: https://github.com/stuarteberg/neuclease
+    tag:  master
+    recipe-subdir: conda-recipe
+
   - name: dvidsparkservices
     recipe-repo: https://github.com/janelia-flyem/DVIDSparkServices
     tag:  master
