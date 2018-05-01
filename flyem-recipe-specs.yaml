@@ -136,11 +136,15 @@ recipe-specs:
     recipe-repo: https://github.com/stuarteberg/fastfilters
     tag:  fix-cmake-findpython
     recipe-subdir: pkg/conda/fastfilters
+    environment:
+      DO_NOT_BUILD_WITH_CXX11_ABI: 1
 
   - name: nifty
     recipe-repo: https://github.com/stuarteberg/nifty
     tag:  flyem
     recipe-subdir: conda-recipe
+    environment:
+      DO_NOT_BUILD_WITH_CXX11_ABI: 1
 
   - name: neuclease
     recipe-repo: https://github.com/stuarteberg/neuclease
