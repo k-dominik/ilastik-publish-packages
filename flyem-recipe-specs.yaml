@@ -146,6 +146,11 @@ recipe-specs:
     environment:
       DO_NOT_BUILD_WITH_CXX11_ABI: 1
 
+  - name: neuroglancer-python
+    recipe-repo: https://github.com/janelia-flyem/neuroglancer
+    tag:  conda-recipe
+    recipe-subdir: conda-recipe
+
   - name: neuclease
     recipe-repo: https://github.com/stuarteberg/neuclease
     tag:  master
