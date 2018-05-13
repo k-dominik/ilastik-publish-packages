@@ -152,7 +152,7 @@ recipe-specs:
     recipe-subdir: conda-recipe
 
   - name: neuclease
-    recipe-repo: https://github.com/stuarteberg/neuclease
+    recipe-repo: https://github.com/janelia-flyem/neuclease
     tag:  master
     recipe-subdir: conda-recipe
 
