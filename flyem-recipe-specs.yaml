@@ -66,6 +66,8 @@ recipe-specs:
     recipe-repo: https://github.com/stuarteberg/dvidutils
     tag: master
     recipe-subdir: conda-recipe
+    environment:
+      DO_NOT_BUILD_WITH_CXX11_ABI: 1
 
   - name: libdvid-cpp
     recipe-repo: https://github.com/janelia-flyem/libdvid-cpp
