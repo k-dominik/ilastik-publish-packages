@@ -73,11 +73,6 @@ recipe-specs:
     recipe-repo: https://github.com/janelia-flyem/libdvid-cpp
     tag: master
     recipe-subdir: conda-recipe
-      
-    # Optional specs
-    conda-build-flags: --no-test
-    environment:
-      SKIP_LIBDVID_TESTS: 1
 
   - name: lowtis
     recipe-repo: https://github.com/janelia-flyem/lowtis
