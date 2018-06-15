@@ -4,7 +4,6 @@ import os
 from os.path import basename, splitext, abspath, exists, dirname, normpath
 from pathlib import Path
 import sys
-import copy
 import argparse
 import subprocess
 import platform
@@ -12,6 +11,7 @@ import json
 import tempfile
 import yaml
 import textwrap
+import datetime
 
 try:
     import argcomplete
@@ -78,6 +78,7 @@ def parse_cmdline_args():
 
 
 def main():
+    start_time = datetime.datetime.now()
     args = parse_cmdline_args()
     _init_globals()
 
@@ -110,11 +111,31 @@ def main():
         print_recipe_list(selected_recipe_specs)
         sys.exit(0)
 
+    result = {
+        'found': [],
+        'built': [],
+        'start_time': start_time.isoformat(timespec='seconds'),
+        'recipe_specs_path': args.recipe_specs_path,
+        'selected_recipies': args.selected_recipes
+    }
+
+    script_path = os.path.abspath(os.path.split(__file__)[0])
+    result_file = os.path.join(script_path, f"{start_time.strftime('%Y%m%d-%H%M%S')}_build_out.yaml")
     for spec in selected_recipe_specs:
-        build_and_upload_recipe(spec, shared_config)
+        status = build_and_upload_recipe(spec, shared_config)
+        for k, v in status.items():
+            result[k].append(v)
+        with open(result_file, 'w') as f:
+            yaml.dump(result, f, default_flow_style=False)
+
+    end_time = datetime.datetime.now()
+    result['end_time'] = end_time.isoformat(timespec='seconds')
+    result['duration'] = str(end_time - start_time)
+    with open(result_file, 'w') as f:
+        yaml.dump(result, f, default_flow_style=False)
 
     print("--------")
-    print("DONE")
+    print(f"DONE, Result written to {result_file}")
     print("--------")
 
 
@@ -217,7 +238,7 @@ def build_and_upload_recipe(recipe_spec, shared_config):
     if PLATFORM_STR not in platforms_to_build_on:
         print(
             f"Not building {package_name} on platform {PLATFORM_STR}, only builds on {platforms_to_build_on}")
-        return
+        return {}
 
     # configure build environment
     build_environment = dict(**os.environ)
@@ -239,16 +260,25 @@ def build_and_upload_recipe(recipe_spec, shared_config):
     print(
         f"Recipe version is: {package_name}-{recipe_version}-{recipe_build_string}")
 
+
     # Check our channel.  Did we already upload this version?
+    package_info = {
+        'pakage_name': package_name,
+        'recipe_version': recipe_version,
+        'recipe_build_string': recipe_build_string
+    }
     if check_already_exists(package_name, recipe_version, recipe_build_string, shared_config):
         print(
             f"Found {package_name}-{recipe_version}-{recipe_build_string} on {shared_config['destination-channel']}, skipping build.")
+        ret_dict = {'found': package_info}
     else:
         # Not on our channel.  Build and upload.
         build_recipe(package_name, recipe_subdir, conda_build_flags,
                      build_environment, shared_config)
         upload_package(package_name, recipe_version,
                        recipe_build_string, shared_config)
+        ret_dict = {'built': package_info}
+    return ret_dict
 
 
 def checkout_recipe_repo(recipe_repo, tag):
