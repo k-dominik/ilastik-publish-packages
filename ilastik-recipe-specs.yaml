@@ -136,8 +136,8 @@ recipe-specs:
         DO_NOT_BUILD_WITH_CXX11_ABI: 1  # [linux]
 
     - name: nifty
-      recipe-repo: https://github.com/DerThorsten/nifty
-      tag: master
+      recipe-repo: https://github.com/ilastik/nifty
+      tag: fix-xtensor
       recipe-subdir: conda-recipe
       environment:
         DO_NOT_BUILD_WITH_CXX11_ABI: 1
@@ -266,8 +266,8 @@ recipe-specs:
       build-on:
         - linux
         - osx
-      recipe-repo: https://github.com/DerThorsten/nifty
-      tag: master
+      recipe-repo: https://github.com/ilastik/nifty
+      tag: fix-xtensor
       recipe-subdir: conda-recipe
       environment:
         WITH_GUROBI: 1
@@ -277,8 +277,8 @@ recipe-specs:
     - name: nifty-with-gurobi
       build-on:
         - win
-      recipe-repo: https://github.com/DerThorsten/nifty
-      tag: master
+      recipe-repo: https://github.com/ilastik/nifty
+      tag: fix-xtensor
       recipe-subdir: conda-recipe
       environment:
         WITH_GUROBI: 1
@@ -289,8 +289,8 @@ recipe-specs:
       build-on:
         - linux
         - osx
-      recipe-repo: https://github.com/DerThorsten/nifty
-      tag: master
+      recipe-repo: https://github.com/ilastik/nifty
+      tag: fix-xtensor
       recipe-subdir: conda-recipe
       environment:
         WITH_CPLEX: 1
@@ -300,8 +300,8 @@ recipe-specs:
     - name: nifty-with-cplex
       build-on:
         - win
-      recipe-repo: https://github.com/DerThorsten/nifty
-      tag: enh-conda-recipe
+      recipe-repo: https://github.com/ilastik/nifty
+      tag: fix-xtensor
       recipe-subdir: conda-recipe
       environment:
         WITH_CPLEX: 1
