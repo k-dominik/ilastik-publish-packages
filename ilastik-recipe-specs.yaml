@@ -84,28 +84,6 @@ recipe-specs:
       tag: master
       recipe-subdir: conda-recipe
 
-    # Need to build libitk ourselves in order to update dependencies
-    # in particular, libitk fixes hdf5
-    - name: libitk
-      recipe-repo: https://github.com/ilastik/libitk-feedstock
-      recipe-subdir: recipe
-      tag: use-system-compiler-linux
-      build-on:
-        - linux
-        - osx
-      environment:
-        DO_NOT_BUILD_WITH_CXX11_ABI: 1  # [linux]
-
-    - name: iiboost
-      recipe-repo: https://github.com/k-dominik/iiboost
-      tag: use-system-compiler-linux
-      recipe-subdir: conda-recipe
-      build-on:
-        - linux
-        - osx
-      environment:
-        DO_NOT_BUILD_WITH_CXX11_ABI: 1  # [linux]
-
     - name: ilastik-feature-selection
       recipe-repo: https://github.com/ilastik/ilastik-feature-selection
       tag: master
