@@ -115,8 +115,7 @@ def main():
         'found': [],
         'built': [],
         'start_time': start_time.isoformat(timespec='seconds'),
-        'recipe_specs_path': args.recipe_specs_path,
-        'selected_recipies': args.selected_recipes
+        'args': vars(args)
     }
 
     script_path = os.path.abspath(os.path.split(__file__)[0])
