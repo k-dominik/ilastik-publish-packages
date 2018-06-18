@@ -60,6 +60,9 @@ def parse_cmdline_args():
     selection_arg = parser.add_argument(
         'selected_recipes', nargs='*', help='Which recipes to process (Default: process all)')
 
+    parser.add_argument(
+        '--start-from', default='', help='Recipe name to start from building recipe specs in YAML file.')
+
     if ENABLE_TAB_COMPLETION:
         def complete_recipe_selection(prefix, action, parser, parsed_args):
             specs_file_contents = yaml.load(
@@ -105,7 +108,8 @@ def main():
     os.makedirs(shared_config['repo-cache-dir'], exist_ok=True)
 
     selected_recipe_specs = get_selected_specs(
-        args, specs_file_contents["recipe-specs"])
+        args,
+        specs_file_contents["recipe-specs"])
 
     if args.list:
         print_recipe_list(selected_recipe_specs)
@@ -172,16 +176,31 @@ def get_selected_specs(args, full_recipe_specs):
     """
     If the user gave a list of specific recipes to process,
     select them from the given recipe specs.
+
+    Args:
+        start_from (str): Name of the recipe from from full_recipe_specs to
+          start from. If not '', then the recipe should be in full_recipe_specs.
+        selected_recipes (list): List of recipe names to build
+        full_recipe_specs (list): List of recipes, usually loaded from yaml
+
+    Returns:
+        list: list of recipes to build
     """
+    available_recipe_names = [spec['name'] for spec in full_recipe_specs]
+    if args.start_from != '':
+        if args.start_from not in available_recipe_names:
+            sys.exit(
+                f"'start-from' parameter invalid: {args.start_from} not found in full_recipe_specs."
+            )
+        full_recipe_specs = full_recipe_specs[available_recipe_names.index(args.start_from)::]
+
     if not args.selected_recipes:
         return full_recipe_specs
 
-    available_recipe_names = [spec['name'] for spec in full_recipe_specs]
     invalid_names = set(args.selected_recipes) - set(available_recipe_names)
     if invalid_names:
-        sys.stderr.write("Invalid selection: The following recipes are not listed"
-                         f" in {args.recipe_specs_path}: {', '.join(invalid_names)}")
-        sys.exit(1)
+        sys.exit("Invalid selection: The following recipes are not listed"
+                 f" in {args.recipe_specs_path}: {', '.join(invalid_names)}")
 
     # Remove non-selected recipes
     filtered_specs = list(
@@ -411,8 +430,7 @@ def build_recipe(package_name, recipe_subdir, build_flags, build_environment, sh
     try:
         subprocess.check_call(build_cmd, env=build_environment, shell=True)
     except subprocess.CalledProcessError as ex:
-        print(f"Failed to build package: {package_name}", file=sys.stderr)
-        sys.exit(1)
+        sys.exit(f"Failed to build package: {package_name}", file=sys.stderr)
 
 
 def upload_package(package_name, recipe_version, recipe_build_string, shared_config):
