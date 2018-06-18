@@ -137,6 +137,8 @@ def main():
     print("--------")
     print(f"DONE, Result written to {result_file}")
     print("--------")
+    print("Summary:")
+    print(yaml.dump(result, default_flow_style=False))
 
 
 def _init_globals():
