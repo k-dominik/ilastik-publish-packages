@@ -27,6 +27,8 @@ CONDA_PLATFORM = None
 PLATFORM_STR = None
 BUILD_PKG_DIR = None
 
+# Disable git pager for log messages, etc.
+os.environ['GIT_PAGER'] = ''
 
 def parse_cmdline_args():
     """
