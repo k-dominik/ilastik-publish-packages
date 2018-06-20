@@ -57,20 +57,22 @@ recipe-specs:
     tag: master
     recipe-subdir: conda-recipe
 
+  - name: draco
+    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    tag: master
+    recipe-subdir: draco
+
   - name: dvidutils
     recipe-repo: https://github.com/stuarteberg/dvidutils
     tag: master
     recipe-subdir: conda-recipe
+    environment:
+      DO_NOT_BUILD_WITH_CXX11_ABI: 1
 
   - name: libdvid-cpp
     recipe-repo: https://github.com/janelia-flyem/libdvid-cpp
     tag: master
     recipe-subdir: conda-recipe
-      
-    # Optional specs
-    conda-build-flags: --no-test
-    environment:
-      SKIP_LIBDVID_TESTS: 1
 
   - name: lowtis
     recipe-repo: https://github.com/janelia-flyem/lowtis
@@ -116,6 +118,41 @@ recipe-specs:
     tag:  upgrade-boost # Use boost-1.64
     recipe-subdir: conda-recipe
 
+  - name: pyspark-flame
+    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    tag:  master
+    recipe-subdir: pyspark-flame
+
+  # Note: Uses GPLv3.  Can't be included in BSD-licensed code.
+  - name: graph-tool
+    recipe-repo: https://github.com/stuarteberg/graph-tool-feedstock
+    tag:  master
+    recipe-subdir: recipe
+
+  - name: fastfilters
+    recipe-repo: https://github.com/stuarteberg/fastfilters
+    tag:  fix-cmake-findpython
+    recipe-subdir: pkg/conda/fastfilters
+    environment:
+      DO_NOT_BUILD_WITH_CXX11_ABI: 1
+
+  - name: nifty
+    recipe-repo: https://github.com/stuarteberg/nifty
+    tag:  flyem
+    recipe-subdir: conda-recipe
+    environment:
+      DO_NOT_BUILD_WITH_CXX11_ABI: 1
+
+  - name: neuroglancer-python
+    recipe-repo: https://github.com/janelia-flyem/neuroglancer
+    tag:  conda-recipe
+    recipe-subdir: conda-recipe
+
+  - name: neuclease
+    recipe-repo: https://github.com/janelia-flyem/neuclease
+    tag:  master
+    recipe-subdir: conda-recipe
+
   - name: dvidsparkservices
     recipe-repo: https://github.com/janelia-flyem/DVIDSparkServices
     tag:  master
@@ -151,11 +188,6 @@ recipe-specs:
     recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
     tag: master
     recipe-subdir: fq-mesh-simplification
-
-  - name: draco
-    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
-    tag: master
-    recipe-subdir: draco
 
   - name: vol2mesh
     recipe-repo: https://github.com/janelia-flyem/vol2mesh
