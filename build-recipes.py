@@ -59,6 +59,9 @@ def parse_cmdline_args():
                         help='List the recipe names in the specs file')
     specs_path_arg = parser.add_argument(
         'recipe_specs_path', help='Path to a recipe specs YAML file')
+    parser.add_argument(
+        'pin_specs_path', help='Path to variant YAML file containing version pins'
+    )
     selection_arg = parser.add_argument(
         'selected_recipes', nargs='*', help='Which recipes to process (Default: process all)')
 
@@ -88,7 +91,7 @@ def main():
     # Read the 'shared-config' section
     shared_config = specs_file_contents["shared-config"]
     expected_shared_config_keys = [
-        'python', 'numpy', 'source-channels', 'destination-channel', 'repo-cache-dir']
+        'source-channels', 'destination-channel', 'repo-cache-dir']
     assert set(shared_config.keys()) == set(expected_shared_config_keys), \
         f"shared-config section is missing expected keys or has too many.  Expected: {expected_shared_config_keys}"
 
@@ -317,8 +320,6 @@ def get_rendered_version(package_name, recipe_subdir, build_environment, shared_
     temp_meta_file = tempfile.NamedTemporaryFile(delete=False)
     temp_meta_file.close()
     render_cmd = (f"conda render"
-                  f" --python={shared_config['python']}"
-                  f" --numpy={shared_config['numpy']}"
                   f" {recipe_subdir}"
                   f" {shared_config['source-channel-string']}"
                   f" --file {temp_meta_file.name}")
@@ -374,8 +375,6 @@ def build_recipe(package_name, recipe_subdir, build_flags, build_environment, sh
     """
     print(f"Building {package_name}")
     build_cmd = (f"conda build {build_flags}"
-                 f" --python={shared_config['python']}"
-                 f" --numpy={shared_config['numpy']}"
                  f" {shared_config['source-channel-string']}"
                  f" {recipe_subdir}")
     print('\t' + build_cmd)
