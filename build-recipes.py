@@ -116,7 +116,7 @@ def main():
         sys.exit(0)
 
     for spec in selected_recipe_specs:
-        build_and_upload_recipe(spec, shared_config)
+        build_and_upload_recipe(spec, shared_config, args.pin_specs_path)
 
     print("--------")
     print("DONE")
