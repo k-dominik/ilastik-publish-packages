@@ -179,7 +179,7 @@ def get_selected_specs(args, full_recipe_specs):
     return filtered_specs
 
 
-def build_and_upload_recipe(recipe_spec, shared_config):
+def build_and_upload_recipe(recipe_spec, shared_config, variant_config):
     """
     Given a recipe-spec dictionary, build and upload the recipe if
     it doesn't already exist on ilastik-forge.
@@ -240,7 +240,7 @@ def build_and_upload_recipe(recipe_spec, shared_config):
 
     # Render
     recipe_version, recipe_build_string = get_rendered_version(
-        package_name, recipe_subdir, build_environment, shared_config)
+        package_name, recipe_subdir, build_environment, shared_config, variant_config)
     print(
         f"Recipe version is: {package_name}-{recipe_version}-{recipe_build_string}")
 
@@ -251,7 +251,7 @@ def build_and_upload_recipe(recipe_spec, shared_config):
     else:
         # Not on our channel.  Build and upload.
         build_recipe(package_name, recipe_subdir, conda_build_flags,
-                     build_environment, shared_config)
+                     build_environment, shared_config, variant_config)
         upload_package(package_name, recipe_version,
                        recipe_build_string, shared_config)
 
@@ -311,7 +311,7 @@ def checkout_recipe_repo(recipe_repo, tag):
     return repo_name
 
 
-def get_rendered_version(package_name, recipe_subdir, build_environment, shared_config):
+def get_rendered_version(package_name, recipe_subdir, build_environment, shared_config, variant_config):
     """
     Use 'conda render' to process a recipe's meta.yaml (processes jinja templates and selectors).
     Returns the version and build string from the rendered file.
@@ -320,6 +320,7 @@ def get_rendered_version(package_name, recipe_subdir, build_environment, shared_
     temp_meta_file = tempfile.NamedTemporaryFile(delete=False)
     temp_meta_file.close()
     render_cmd = (f"conda render"
+                  f" -m {variant_config}"
                   f" {recipe_subdir}"
                   f" {shared_config['source-channel-string']}"
                   f" --file {temp_meta_file.name}")
@@ -369,12 +370,13 @@ def check_already_exists(package_name, recipe_version, recipe_build_string, shar
     return False
 
 
-def build_recipe(package_name, recipe_subdir, build_flags, build_environment, shared_config):
+def build_recipe(package_name, recipe_subdir, build_flags, build_environment, shared_config, variant_config):
     """
     Build the recipe.
     """
     print(f"Building {package_name}")
     build_cmd = (f"conda build {build_flags}"
+                 f" -m {variant_config}"
                  f" {shared_config['source-channel-string']}"
                  f" {recipe_subdir}")
     print('\t' + build_cmd)
