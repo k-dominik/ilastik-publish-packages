@@ -95,6 +95,9 @@ def main():
     assert set(shared_config.keys()) == set(expected_shared_config_keys), \
         f"shared-config section is missing expected keys or has too many.  Expected: {expected_shared_config_keys}"
 
+    # make path to config file absolute:
+    args.pin_specs_path = os.path.abspath(args.pin_specs_path)
+
     # Convenience member
     shared_config['source-channel-string'] = ' '.join(
         [f'-c {ch}' for ch in shared_config['source-channels']])
