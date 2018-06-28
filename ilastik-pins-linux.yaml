@@ -1,3 +1,5 @@
+boost:
+  - 1.63.0
 h5py:
   - 2.7.1
 hdf5:
@@ -8,7 +10,7 @@ mkl:
   - 2017.0.3  # [win]
 lemon:
   - 1.2.4
-libstdcxx-ng:
+libstdcxxng:
   - 5.4.0
 networkx:
   - 1.11
