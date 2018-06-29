@@ -318,6 +318,9 @@ def get_rendered_version(package_name, recipe_subdir, build_environment, shared_
     """
     Use 'conda render' to process a recipe's meta.yaml (processes jinja templates and selectors).
     Returns the version and build string from the rendered file.
+
+    Returns
+        tuple: recipe_version, recipe_build_string
     """
     print(f"Rendering recipe in {recipe_subdir}...")
     temp_meta_file = tempfile.NamedTemporaryFile(delete=False)
@@ -340,7 +343,7 @@ def get_rendered_version(package_name, recipe_subdir, build_environment, shared_
     render_cmd += " --output"
     rendered_filename = subprocess.check_output(
         render_cmd, env=build_environment, shell=True).decode()
-    build_string_with_hash = rendered_filename.split('-')[-1].split('.')[0]
+    build_string_with_hash = rendered_filename.split('-')[-1].split('.tar.bz2')[0]
 
     return meta['package']['version'], build_string_with_hash
 
