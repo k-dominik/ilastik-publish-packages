@@ -59,9 +59,6 @@ def parse_cmdline_args():
                         help='List the recipe names in the specs file')
     specs_path_arg = parser.add_argument(
         'recipe_specs_path', help='Path to a recipe specs YAML file')
-    parser.add_argument(
-        'pin_specs_path', help='Path to variant YAML file containing version pins'
-    )
     selection_arg = parser.add_argument(
         'selected_recipes', nargs='*', help='Which recipes to process (Default: process all)')
 
@@ -91,12 +88,12 @@ def main():
     # Read the 'shared-config' section
     shared_config = specs_file_contents["shared-config"]
     expected_shared_config_keys = [
-        'source-channels', 'destination-channel', 'repo-cache-dir']
+        'pinned-versions', 'source-channels', 'destination-channel', 'repo-cache-dir']
     assert set(shared_config.keys()) == set(expected_shared_config_keys), \
         f"shared-config section is missing expected keys or has too many.  Expected: {expected_shared_config_keys}"
 
     # make path to config file absolute:
-    args.pin_specs_path = os.path.abspath(args.pin_specs_path)
+    pin_specs_path = os.path.abspath(shared_config['pinned-versions'])
 
     # Convenience member
     shared_config['source-channel-string'] = ' '.join(
@@ -119,7 +116,7 @@ def main():
         sys.exit(0)
 
     for spec in selected_recipe_specs:
-        build_and_upload_recipe(spec, shared_config, args.pin_specs_path)
+        build_and_upload_recipe(spec, shared_config, pin_specs_path)
 
     print("--------")
     print("DONE")

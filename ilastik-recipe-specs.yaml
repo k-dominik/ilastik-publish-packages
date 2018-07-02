@@ -1,4 +1,5 @@
 shared-config:
+    pinned-versions: ./ilastik-pins.yaml
     repo-cache-dir: ./repo-cache # Relative to this yaml file's directory.
     source-channels:
         - ilastik-forge
