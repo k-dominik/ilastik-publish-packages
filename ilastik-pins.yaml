@@ -26,3 +26,19 @@ tifffile:
   - 0.4.post2
 vigra:
   - 1.11
+
+pin_run_as_build:
+  boost: x.x
+  h5py: x.x
+  hdf5: x.x.x
+  jpeg: x
+  mkl: x.x.x  # [win]
+  lemon: x.x.x
+  libstdcxxng: x.x
+  networkx: x.x
+  numpy: x.x
+  python: x.x
+  pyqt: x.x
+  qt: x.x
+  tifffile: x.x.x
+  vigra: x.x
