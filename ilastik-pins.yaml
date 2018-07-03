@@ -34,7 +34,7 @@ pin_run_as_build:
   jpeg: x
   mkl: x.x.x  # [win]
   lemon: x.x.x
-  libstdcxxng: x.x
+  libstdcxx-ng: x.x
   networkx: x.x
   numpy: x.x
   python: x.x
