@@ -10,6 +10,8 @@ mkl:
   - 2017.0.3  # [win]
 lemon:
   - 1.2.4
+libpng:
+  - 1.6.27
 libstdcxxng:
   - 5.4.0
 networkx:
@@ -34,6 +36,7 @@ pin_run_as_build:
   jpeg: x
   mkl: x.x.x  # [win]
   lemon: x.x.x
+  libpng: x.x
   libstdcxx-ng: x.x
   networkx: x.x
   numpy: x.x
