@@ -129,14 +129,14 @@ recipe-specs:
 
     - name: fastfilters
       recipe-repo: https://github.com/ilastik/fastfilters
-      tag: devel
+      tag: pin-dependencies
       recipe-subdir: pkg/conda/fastfilters
       environment:
         DO_NOT_BUILD_WITH_CXX11_ABI: 1  # [linux]
 
     - name: nifty
-      recipe-repo: https://github.com/k-dominik/nifty
-      tag: enh-conda-recipe
+      recipe-repo: https://github.com/ilastik/nifty
+      tag: pin-dependencies
       recipe-subdir: conda-recipe
       environment:
         DO_NOT_BUILD_WITH_CXX11_ABI: 1
@@ -265,8 +265,8 @@ recipe-specs:
       build-on:
         - linux
         - osx
-      recipe-repo: https://github.com/k-dominik/nifty
-      tag: enh-conda-recipe
+      recipe-repo: https://github.com/ilastik/nifty
+      tag: pin-dependencies
       recipe-subdir: conda-recipe
       environment:
         WITH_GUROBI: 1
@@ -276,8 +276,8 @@ recipe-specs:
     - name: nifty-with-gurobi
       build-on:
         - win
-      recipe-repo: https://github.com/k-dominik/nifty
-      tag: enh-conda-recipe
+      recipe-repo: https://github.com/ilastik/nifty
+      tag: pin-dependencies
       recipe-subdir: conda-recipe
       environment:
         WITH_GUROBI: 1
@@ -288,8 +288,8 @@ recipe-specs:
       build-on:
         - linux
         - osx
-      recipe-repo: https://github.com/k-dominik/nifty
-      tag: enh-conda-recipe
+      recipe-repo: https://github.com/ilastik/nifty
+      tag: pin-dependencies
       recipe-subdir: conda-recipe
       environment:
         WITH_CPLEX: 1
@@ -299,8 +299,8 @@ recipe-specs:
     - name: nifty-with-cplex
       build-on:
         - win
-      recipe-repo: https://github.com/k-dominik/nifty
-      tag: enh-conda-recipe
+      recipe-repo: https://github.com/ilastik/nifty
+      tag: pin-dependencies
       recipe-subdir: conda-recipe
       environment:
         WITH_CPLEX: 1
