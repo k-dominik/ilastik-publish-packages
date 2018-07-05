@@ -26,7 +26,7 @@ recipe-specs:
 
     - name: lemon
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: master
+      tag: pin-dependencies
       recipe-subdir: lemon
 
       # Optional specs
@@ -52,7 +52,7 @@ recipe-specs:
     # but it doesn't build WITH_LEMON yet.
     - name: vigra
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: master
+      tag: pin-dependencies
       recipe-subdir: vigra
       environment:
         VIGRA_SKIP_TESTS: 0
@@ -61,44 +61,44 @@ recipe-specs:
 
     - name: dpct
       recipe-repo: https://github.com/ilastik/dpct
-      tag: master
+      tag: pin-dependencies
       recipe-subdir: conda-recipe
       environment:
         DO_NOT_BUILD_WITH_CXX11_ABI: 1  # [linux]
 
     - name: yapsy
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: master
+      tag: pin-dependencies
       recipe-subdir: yapsy
 
     - name: marching_cubes
       recipe-repo: https://github.com/ilastik/marching_cubes
-      tag: master
+      tag: pin-dependencies
       recipe-subdir: conda-recipe
       environment:
         DO_NOT_BUILD_WITH_CXX11_ABI: 1  # [linux]
 
     - name: hytra
       recipe-repo: https://github.com/ilastik/hytra
-      tag: master
+      tag: pin-dependencies
       recipe-subdir: conda-recipe
 
     - name: ilastik-feature-selection
       recipe-repo: https://github.com/ilastik/ilastik-feature-selection
-      tag: master
+      tag: pin-dependencies
       recipe-subdir: conda-recipe
       conda-build-flags: --no-remove-work-dir --no-test
 
     - name: ilastiktools
       recipe-repo: https://github.com/ilastik/ilastiktools
-      tag: pybind11
+      tag: pin-dependencies
       recipe-subdir: conda-recipe
       environment:
         DO_NOT_BUILD_WITH_CXX11_ABI: 1  # [linux]
 
     - name: ilastikrag
       recipe-repo: https://github.com/ilastik/ilastikrag
-      tag: master
+      tag: pin-dependencies
       recipe-subdir: conda-recipe
 
     - name: mamutexport
@@ -109,22 +109,22 @@ recipe-specs:
     # tifffile is available from conda-forge, but we need an old version of it...
     - name: tifffile
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: master
+      tag: pin-dependencies
       recipe-subdir: tifffile
 
     - name: pytiff
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: master
+      tag: pin-dependencies
       recipe-subdir: pytiff
 
     - name: numpy-allocation-tracking
       recipe-repo: https://github.com/ilastik/numpy-allocation-tracking
-      tag: master
+      tag: pin-dependencies
       recipe-subdir: conda-recipe
 
     - name: wsdt
       recipe-repo: https://github.com/ilastik/wsdt
-      tag: master
+      tag: pin-dependencies
       recipe-subdir: conda-recipe
 
     - name: fastfilters
@@ -143,12 +143,12 @@ recipe-specs:
 
     - name: ilastik-meta
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: master
+      tag: pin-dependencies
       recipe-subdir: ilastik-meta
 
     - name: ilastik-launch
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: master
+      tag: pin-dependencies
       recipe-subdir: ilastik-launch
       build-on:
        - linux
@@ -156,7 +156,7 @@ recipe-specs:
 
     - name: ilastik-dependencies-no-solvers
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: master
+      tag: pin-dependencies
       recipe-subdir: ilastik-dependencies
       environment:
         WITH_SOLVERS: 0
@@ -195,19 +195,19 @@ recipe-specs:
 ##
     - name: opengm-structured-learning-headers
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: master
+      tag: pin-dependencies
       recipe-subdir: opengm-structured-learning-headers
 
     - name: cplex-shared
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: master
+      tag: pin-dependencies
       recipe-subdir: cplex-shared
       environment:
         CPLEX_ROOT_DIR: /opt/cplex
 
     - name: gurobi-symlink
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: master
+      tag: pin-dependencies
       recipe-subdir: gurobi-symlink
       environment:
         GUROBI_ROOT_DIR: /opt/gurobi752/linux64
@@ -217,7 +217,7 @@ recipe-specs:
         - linux
         - osx
       recipe-repo: https://github.com/ilastik/multiHypothesesTracking
-      tag: master
+      tag: pin-dependencies
       recipe-subdir: conda-recipe
       conda-build-flags: --no-test
       environment:
@@ -230,7 +230,7 @@ recipe-specs:
       build-on:
         - win
       recipe-repo: https://github.com/ilastik/multiHypothesesTracking
-      tag: master
+      tag: pin-dependencies
       recipe-subdir: conda-recipe
       conda-build-flags: --no-test
       environment:
@@ -244,7 +244,7 @@ recipe-specs:
         - linux
         - osx
       recipe-repo: https://github.com/ilastik/multiHypothesesTracking
-      tag: master
+      tag: pin-dependencies
       recipe-subdir: conda-recipe
       environment:
         WITH_CPLEX: 1
@@ -255,7 +255,7 @@ recipe-specs:
       build-on:
         - win
       recipe-repo: https://github.com/ilastik/multiHypothesesTracking
-      tag: master
+      tag: pin-dependencies
       recipe-subdir: conda-recipe
       environment:
         WITH_CPLEX: 1
@@ -308,7 +308,7 @@ recipe-specs:
 
     - name: ilastik-dependencies
       recipe-repo: https://github.com/ilastik/ilastik-build-conda
-      tag: master
+      tag: pin-dependencies
       recipe-subdir: ilastik-dependencies
       environment:
         WITH_SOLVERS: 1
