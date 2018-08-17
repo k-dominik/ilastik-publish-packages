@@ -4,7 +4,6 @@ import os
 from os.path import basename, splitext, abspath, exists, dirname, normpath
 from pathlib import Path
 import sys
-import copy
 import argparse
 import subprocess
 import platform
@@ -12,6 +11,7 @@ import json
 import tempfile
 import yaml
 import textwrap
+import datetime
 
 try:
     import argcomplete
@@ -62,6 +62,9 @@ def parse_cmdline_args():
     selection_arg = parser.add_argument(
         'selected_recipes', nargs='*', help='Which recipes to process (Default: process all)')
 
+    parser.add_argument(
+        '--start-from', default='', help='Recipe name to start from building recipe specs in YAML file.')
+
     if ENABLE_TAB_COMPLETION:
         def complete_recipe_selection(prefix, action, parser, parsed_args):
             specs_file_contents = yaml.load(
@@ -80,6 +83,7 @@ def parse_cmdline_args():
 
 
 def main():
+    start_time = datetime.datetime.now()
     args = parse_cmdline_args()
     _init_globals()
 
@@ -106,18 +110,40 @@ def main():
     os.makedirs(shared_config['repo-cache-dir'], exist_ok=True)
 
     selected_recipe_specs = get_selected_specs(
-        args, specs_file_contents["recipe-specs"])
+        args,
+        specs_file_contents["recipe-specs"])
 
     if args.list:
         print_recipe_list(selected_recipe_specs)
         sys.exit(0)
 
+    result = {
+        'found': [],
+        'built': [],
+        'start_time': start_time.isoformat(timespec='seconds'),
+        'args': vars(args)
+    }
+
+    script_path = os.path.abspath(os.path.split(__file__)[0])
+    result_file = os.path.join(script_path, f"{start_time.strftime('%Y%m%d-%H%M%S')}_build_out.yaml")
     for spec in selected_recipe_specs:
-        build_and_upload_recipe(spec, shared_config)
+        status = build_and_upload_recipe(spec, shared_config)
+        for k, v in status.items():
+            result[k].append(v)
+        with open(result_file, 'w') as f:
+            yaml.dump(result, f, default_flow_style=False)
+
+    end_time = datetime.datetime.now()
+    result['end_time'] = end_time.isoformat(timespec='seconds')
+    result['duration'] = str(end_time - start_time)
+    with open(result_file, 'w') as f:
+        yaml.dump(result, f, default_flow_style=False)
 
     print("--------")
-    print("DONE")
+    print(f"DONE, Result written to {result_file}")
     print("--------")
+    print("Summary:")
+    print(yaml.dump(result, default_flow_style=False))
 
 
 def _init_globals():
@@ -152,16 +178,31 @@ def get_selected_specs(args, full_recipe_specs):
     """
     If the user gave a list of specific recipes to process,
     select them from the given recipe specs.
+
+    Args:
+        start_from (str): Name of the recipe from from full_recipe_specs to
+          start from. If not '', then the recipe should be in full_recipe_specs.
+        selected_recipes (list): List of recipe names to build
+        full_recipe_specs (list): List of recipes, usually loaded from yaml
+
+    Returns:
+        list: list of recipes to build
     """
+    available_recipe_names = [spec['name'] for spec in full_recipe_specs]
+    if args.start_from != '':
+        if args.start_from not in available_recipe_names:
+            sys.exit(
+                f"'start-from' parameter invalid: {args.start_from} not found in full_recipe_specs."
+            )
+        full_recipe_specs = full_recipe_specs[available_recipe_names.index(args.start_from)::]
+
     if not args.selected_recipes:
         return full_recipe_specs
 
-    available_recipe_names = [spec['name'] for spec in full_recipe_specs]
     invalid_names = set(args.selected_recipes) - set(available_recipe_names)
     if invalid_names:
-        sys.stderr.write("Invalid selection: The following recipes are not listed"
-                         f" in {args.recipe_specs_path}: {', '.join(invalid_names)}")
-        sys.exit(1)
+        sys.exit("Invalid selection: The following recipes are not listed"
+                 f" in {args.recipe_specs_path}: {', '.join(invalid_names)}")
 
     # Remove non-selected recipes
     filtered_specs = list(
@@ -219,7 +260,7 @@ def build_and_upload_recipe(recipe_spec, shared_config):
     if PLATFORM_STR not in platforms_to_build_on:
         print(
             f"Not building {package_name} on platform {PLATFORM_STR}, only builds on {platforms_to_build_on}")
-        return
+        return {}
 
     # configure build environment
     build_environment = dict(**os.environ)
@@ -241,16 +282,25 @@ def build_and_upload_recipe(recipe_spec, shared_config):
     print(
         f"Recipe version is: {package_name}-{recipe_version}-{recipe_build_string}")
 
+
     # Check our channel.  Did we already upload this version?
+    package_info = {
+        'pakage_name': package_name,
+        'recipe_version': recipe_version,
+        'recipe_build_string': recipe_build_string
+    }
     if check_already_exists(package_name, recipe_version, recipe_build_string, shared_config):
         print(
             f"Found {package_name}-{recipe_version}-{recipe_build_string} on {shared_config['destination-channel']}, skipping build.")
+        ret_dict = {'found': package_info}
     else:
         # Not on our channel.  Build and upload.
         build_recipe(package_name, recipe_subdir, conda_build_flags,
                      build_environment, shared_config)
         upload_package(package_name, recipe_version,
                        recipe_build_string, shared_config)
+        ret_dict = {'built': package_info}
+    return ret_dict
 
 
 def checkout_recipe_repo(recipe_repo, tag):
@@ -382,8 +432,7 @@ def build_recipe(package_name, recipe_subdir, build_flags, build_environment, sh
     try:
         subprocess.check_call(build_cmd, env=build_environment, shell=True)
     except subprocess.CalledProcessError as ex:
-        print(f"Failed to build package: {package_name}", file=sys.stderr)
-        sys.exit(1)
+        sys.exit(f"Failed to build package: {package_name}", file=sys.stderr)
 
 
 def upload_package(package_name, recipe_version, recipe_build_string, shared_config):
