@@ -92,9 +92,12 @@ def main():
     # Read the 'shared-config' section
     shared_config = specs_file_contents["shared-config"]
     expected_shared_config_keys = [
-        'python', 'numpy', 'source-channels', 'destination-channel', 'repo-cache-dir']
+        'pinned-versions', 'source-channels', 'destination-channel', 'repo-cache-dir']
     assert set(shared_config.keys()) == set(expected_shared_config_keys), \
         f"shared-config section is missing expected keys or has too many.  Expected: {expected_shared_config_keys}"
+
+    # make path to config file absolute:
+    pin_specs_path = os.path.abspath(shared_config['pinned-versions'])
 
     # Convenience member
     shared_config['source-channel-string'] = ' '.join(
@@ -127,7 +130,7 @@ def main():
     script_path = os.path.abspath(os.path.split(__file__)[0])
     result_file = os.path.join(script_path, f"{start_time.strftime('%Y%m%d-%H%M%S')}_build_out.yaml")
     for spec in selected_recipe_specs:
-        status = build_and_upload_recipe(spec, shared_config)
+        status = build_and_upload_recipe(spec, shared_config, pin_specs_path)
         for k, v in status.items():
             result[k].append(v)
         with open(result_file, 'w') as f:
@@ -138,6 +141,7 @@ def main():
     result['duration'] = str(end_time - start_time)
     with open(result_file, 'w') as f:
         yaml.dump(result, f, default_flow_style=False)
+
 
     print("--------")
     print(f"DONE, Result written to {result_file}")
@@ -217,7 +221,7 @@ def get_selected_specs(args, full_recipe_specs):
     return filtered_specs
 
 
-def build_and_upload_recipe(recipe_spec, shared_config):
+def build_and_upload_recipe(recipe_spec, shared_config, variant_config):
     """
     Given a recipe-spec dictionary, build and upload the recipe if
     it doesn't already exist on ilastik-forge.
@@ -278,7 +282,7 @@ def build_and_upload_recipe(recipe_spec, shared_config):
 
     # Render
     recipe_version, recipe_build_string = get_rendered_version(
-        package_name, recipe_subdir, build_environment, shared_config)
+        package_name, recipe_subdir, build_environment, shared_config, variant_config)
     print(
         f"Recipe version is: {package_name}-{recipe_version}-{recipe_build_string}")
 
@@ -296,7 +300,7 @@ def build_and_upload_recipe(recipe_spec, shared_config):
     else:
         # Not on our channel.  Build and upload.
         build_recipe(package_name, recipe_subdir, conda_build_flags,
-                     build_environment, shared_config)
+                     build_environment, shared_config, variant_config)
         upload_package(package_name, recipe_version,
                        recipe_build_string, shared_config)
         ret_dict = {'built': package_info}
@@ -358,17 +362,19 @@ def checkout_recipe_repo(recipe_repo, tag):
     return repo_name
 
 
-def get_rendered_version(package_name, recipe_subdir, build_environment, shared_config):
+def get_rendered_version(package_name, recipe_subdir, build_environment, shared_config, variant_config):
     """
     Use 'conda render' to process a recipe's meta.yaml (processes jinja templates and selectors).
     Returns the version and build string from the rendered file.
+
+    Returns
+        tuple: recipe_version, recipe_build_string
     """
     print(f"Rendering recipe in {recipe_subdir}...")
     temp_meta_file = tempfile.NamedTemporaryFile(delete=False)
     temp_meta_file.close()
     render_cmd = (f"conda render"
-                  f" --python={shared_config['python']}"
-                  f" --numpy={shared_config['numpy']}"
+                  f" -m {variant_config}"
                   f" {recipe_subdir}"
                   f" {shared_config['source-channel-string']}"
                   f" --file {temp_meta_file.name}")
@@ -385,7 +391,7 @@ def get_rendered_version(package_name, recipe_subdir, build_environment, shared_
     render_cmd += " --output"
     rendered_filename = subprocess.check_output(
         render_cmd, env=build_environment, shell=True).decode()
-    build_string_with_hash = rendered_filename.split('-')[-1].split('.')[0]
+    build_string_with_hash = rendered_filename.split('-')[-1].split('.tar.bz2')[0]
 
     return meta['package']['version'], build_string_with_hash
 
@@ -418,14 +424,13 @@ def check_already_exists(package_name, recipe_version, recipe_build_string, shar
     return False
 
 
-def build_recipe(package_name, recipe_subdir, build_flags, build_environment, shared_config):
+def build_recipe(package_name, recipe_subdir, build_flags, build_environment, shared_config, variant_config):
     """
     Build the recipe.
     """
     print(f"Building {package_name}")
     build_cmd = (f"conda build {build_flags}"
-                 f" --python={shared_config['python']}"
-                 f" --numpy={shared_config['numpy']}"
+                 f" -m {variant_config}"
                  f" {shared_config['source-channel-string']}"
                  f" {recipe_subdir}")
     print('\t' + build_cmd)

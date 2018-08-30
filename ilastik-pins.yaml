@@ -1,0 +1,47 @@
+boost:
+  - 1.63.0
+h5py:
+  - 2.7.1
+hdf5:
+  - 1.10.1
+jpeg:
+  - 9b
+mkl:
+  - 2017.0.3  # [win]
+lemon:
+  - 1.2.4
+libpng:
+  - 1.6.27
+libstdcxxng:
+  - 5.4.0
+networkx:
+  - 1.11
+numpy:
+  - 1.12
+python:
+  - 3.6
+pyqt:
+  - 5.6
+qt:
+  - 5.6
+tifffile:
+  - 0.4.post2
+vigra:
+  - 1.11
+
+pin_run_as_build:
+  boost: x.x
+  h5py: x.x
+  hdf5: x.x.x
+  jpeg: x.x
+  mkl: x.x.x  # [win]
+  lemon: x.x.x
+  libpng: x.x
+  libstdcxx-ng: x.x
+  networkx: x.x
+  numpy: x.x
+  python: x.x
+  pyqt: x.x
+  qt: x.x
+  tifffile: x.x.x
+  vigra: x.x
