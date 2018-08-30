@@ -30,6 +30,7 @@ BUILD_PKG_DIR = None
 # Disable git pager for log messages, etc.
 os.environ['GIT_PAGER'] = ''
 
+
 def parse_cmdline_args():
     """
     Parse the user's command-lines, with support for tab-completion.
@@ -437,7 +438,7 @@ def build_recipe(package_name, recipe_subdir, build_flags, build_environment, sh
     try:
         subprocess.check_call(build_cmd, env=build_environment, shell=True)
     except subprocess.CalledProcessError as ex:
-        sys.exit(f"Failed to build package: {package_name}", file=sys.stderr)
+        sys.exit(f"Failed to build package: {package_name}")
 
 
 def upload_package(package_name, recipe_version, recipe_build_string, shared_config):
