@@ -78,6 +78,13 @@ recipe-specs:
       environment:
         DO_NOT_BUILD_WITH_CXX11_ABI: 1  # [linux]
 
+    - name: z5py
+      recipe-repo: https://github.com/k-dominik/z5py-feedstock
+      tag: ilastik
+      recipe-subdir: conda-recipe
+      build-on:
+        - linux
+
     - name: hytra
       recipe-repo: https://github.com/ilastik/hytra
       tag: master
