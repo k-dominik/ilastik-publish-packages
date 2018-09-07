@@ -81,7 +81,7 @@ recipe-specs:
     - name: z5py
       recipe-repo: https://github.com/k-dominik/z5py-feedstock
       tag: ilastik
-      recipe-subdir: conda-recipe
+      recipe-subdir: recipe
       build-on:
         - linux
 
