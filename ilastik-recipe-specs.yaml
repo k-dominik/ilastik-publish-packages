@@ -78,6 +78,13 @@ recipe-specs:
       environment:
         DO_NOT_BUILD_WITH_CXX11_ABI: 1  # [linux]
 
+    # Needed a separate recipe here, mostly because of the boost dependency,
+    # which is fixed to a newer version than in our dependency tree.
+    - name: z5py
+      recipe-repo: https://github.com/ilastik/ilastik-build-conda
+      tag: master
+      recipe-subdir: z5
+
     - name: hytra
       recipe-repo: https://github.com/ilastik/hytra
       tag: master
