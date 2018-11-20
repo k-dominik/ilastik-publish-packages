@@ -37,6 +37,11 @@ recipe-specs:
     tag: master
     recipe-subdir: python-lz4
 
+  - name: confiddler
+    recipe-repo: https://github.com/stuarteberg/confiddler
+    tag: master
+    recipe-subdir: conda-recipe
+
   - name: quilted
     recipe-repo: https://github.com/stuarteberg/quilted
     tag: master
