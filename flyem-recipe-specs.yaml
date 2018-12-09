@@ -23,17 +23,17 @@ recipe-specs:
     recipe-subdir: recipe
 
   - name: jansson
-    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    recipe-repo: https://github.com/janelia-flyem/flyem-conda-recipes
     tag: master
     recipe-subdir: jansson
 
   - name: lz4
-    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    recipe-repo: https://github.com/janelia-flyem/flyem-conda-recipes
     tag: master
     recipe-subdir: lz4
 
   - name: python-lz4
-    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    recipe-repo: https://github.com/janelia-flyem/flyem-conda-recipes
     tag: master
     recipe-subdir: python-lz4
 
@@ -63,7 +63,7 @@ recipe-specs:
     recipe-subdir: conda-recipe
 
   - name: draco
-    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    recipe-repo: https://github.com/janelia-flyem/flyem-conda-recipes
     tag: master
     recipe-subdir: draco
 
@@ -90,7 +90,7 @@ recipe-specs:
     recipe-subdir: recipe
     
   - name: vtk-nopython
-    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    recipe-repo: https://github.com/janelia-flyem/flyem-conda-recipes
     tag: master
     recipe-subdir: vtk-nopython
       
@@ -109,12 +109,12 @@ recipe-specs:
     recipe-subdir: recipe-neutube-python
 
   - name: gsutil-env
-    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    recipe-repo: https://github.com/janelia-flyem/flyem-conda-recipes
     tag: master
     recipe-subdir: gsutil-env
 
   - name: munkres
-    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    recipe-repo: https://github.com/janelia-flyem/flyem-conda-recipes
     tag:  master
     recipe-subdir: munkres
 
@@ -124,7 +124,7 @@ recipe-specs:
     recipe-subdir: conda-recipe
 
   - name: pyspark-flame
-    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    recipe-repo: https://github.com/janelia-flyem/flyem-conda-recipes
     tag:  master
     recipe-subdir: pyspark-flame
 
@@ -157,20 +157,22 @@ recipe-specs:
     recipe-repo: https://github.com/janelia-flyem/neuclease
     tag:  master
     recipe-subdir: conda-recipe
+    conda-build-flags: --no-test
 
   - name: dvidsparkservices
     recipe-repo: https://github.com/janelia-flyem/DVIDSparkServices
     tag:  master
     recipe-subdir: conda-recipe
+    conda-build-flags: --no-test
 
   - name: basholeveldb
-    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    recipe-repo: https://github.com/janelia-flyem/flyem-conda-recipes
     tag:  master
     recipe-subdir: basholeveldb
 
   - name: dvid-web-console
     # From pre-built distribution
-    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    recipe-repo: https://github.com/janelia-flyem/flyem-conda-recipes
     recipe-subdir: dvid-web-console
     tag: master
     
@@ -190,7 +192,7 @@ recipe-specs:
     recipe-subdir: conda-recipe
 
   - name: fq-mesh-simplification
-    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+    recipe-repo: https://github.com/janelia-flyem/flyem-conda-recipes
     tag: master
     recipe-subdir: fq-mesh-simplification
 
@@ -198,10 +200,11 @@ recipe-specs:
     recipe-repo: https://github.com/janelia-flyem/vol2mesh
     tag: master
     recipe-subdir: conda-recipe
+    conda-build-flags: --no-test
 
 ## FIXME: Our recipe for google-api-client hasn't been updated yet.
 #  - name: google-api-client
-#    recipe-repo: https://github.com/janelia-flyem/flyem-build-conda
+#    recipe-repo: https://github.com/janelia-flyem/flyem-conda-recipes
 #    tag:  master
 #    recipe-subdir: google-api-client
 
