@@ -19,3 +19,5 @@ install:
 script:
   - source activate test-env
   - pytest tests
+  # test invocation of script
+  - publish-conda-stack
