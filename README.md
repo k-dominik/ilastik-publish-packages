@@ -9,6 +9,8 @@
 - [ ] add post-link, (pre-unlink script?) for argcomplete
 - [ ] update readme
 - [ ] tests
+- [ ] remove, move example recipes, pins
+- [ ] rename repo to `publish-conda-stack`
 
 Scripts to update our published conda packages when our recipes have changed.
 
