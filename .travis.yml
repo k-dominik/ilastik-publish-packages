@@ -14,10 +14,11 @@ before_install:
 install:
   - conda install -q python=$TRAVIS_PYTHON_VERSION conda-build pip anaconda-client 
   - conda build conda-recipe
-  - conda env create -n test-env --file dev/environment-dev.yaml --use-local publish-conda-stack
+  - conda env create -n test-env --file dev/environment-dev.yaml
+  - conda install -n test-env --use-local publish-conda-stack
 
 script:
   - source activate test-env
   - pytest tests
   # test invocation of script
-  - publish-conda-stack
+  - publish-conda-stack -h
