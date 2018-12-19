@@ -1,4 +1,15 @@
-# ilastik-publish-packages
+[![Build Status](https://travis-ci.org/ilastik/ilastik-publish-packages.svg?branch=master)](https://travis-ci.org/ilastik/ilastik-publish-packages)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+
+# publish-conda-stack
+
+
+## TODOs:
+
+- [ ] add post-link, (pre-unlink script?) for argcomplete
+- [ ] update readme
+- [ ] tests
+
 Scripts to update our published conda packages when our recipes have changed.
 
 By Stuart Berg, Carsten Haubold, in 2017
