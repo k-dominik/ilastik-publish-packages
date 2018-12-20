@@ -44,19 +44,6 @@ def parse_cmdline_args():
     if prog_name[0] not in (".", "/"):
         prog_name = "./" + prog_name
 
-    help_epilog = textwrap.dedent(
-        f"""\
-        --------------------------------------------------------------------
-        To activate command-line tab-completion, run the following commands:
-
-        conda install argcomplete
-        echo 'eval "$(register-python-argcomplete {prog_name} -s bash)"' >> {bashrc}
-
-        ...and run this script directly as "{prog_name}", not "python {prog_name}"
-        --------------------------------------------------------------------
-        """
-    )
-
     parser = argparse.ArgumentParser(
         epilog=help_epilog, formatter_class=argparse.RawDescriptionHelpFormatter
     )
