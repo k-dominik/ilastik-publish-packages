@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="publish-conda-stack",
-    version="0.2.0dev1",
+    version="0.2.0dev7",
     author="Stuart Berg, Carsten Haubold",
     author_email="team@ilastik.org",
     license="MIT",
@@ -12,7 +12,7 @@ setup(
     package_dir={"": "src"},
     packages=find_packages("./src"),
     include_package_data=True,
-    install_requires=["yaml"],
+    install_requires=["pyyaml", "argcomplete"],
     entry_points={
         "console_scripts": ["publish-conda-stack = publish_conda_stack.__main__:main"]
     },

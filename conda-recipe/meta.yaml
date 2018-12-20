@@ -8,9 +8,10 @@ source:
   path: ..
 
 build:
-  noarch: python
-  script: python -m pip install --no-deps --ignore-installed .
-
+  script:
+        - python -m pip install --no-deps --ignore-installed .
+        - mkdir -p $PREFIX/etc/conda/activate.d    # [unix]
+        - echo 'eval "$(register-python-argcomplete publish-conda-stack -s bash)"' > $PREFIX/etc/conda/activate.d/activate_publish-conda-stack.sh  # [unix]
 requirements:
   build:
     - python >=3.6
