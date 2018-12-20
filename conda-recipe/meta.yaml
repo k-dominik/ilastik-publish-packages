@@ -8,10 +8,15 @@ source:
   path: ..
 
 build:
+  noarch: python
   script:
         - python -m pip install --no-deps --ignore-installed .
-        - mkdir -p $PREFIX/etc/conda/activate.d    # [unix]
-        - echo 'eval "$(register-python-argcomplete publish-conda-stack -s bash)"' > $PREFIX/etc/conda/activate.d/activate_publish-conda-stack.sh  # [unix]
+        - mkdir -p $PREFIX/etc/conda/activate.d
+        - echo 'eval "$(register-python-argcomplete publish-conda-stack -s bash)"' > $PREFIX/etc/conda/activate.d/activate_publish-conda-stack.sh
+  entry_points:
+    {% for ep in data['entry_points']['console_scripts'] %}
+    - {{ ep }}
+    {% endfor %}
 requirements:
   build:
     - python >=3.6
