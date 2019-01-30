@@ -58,6 +58,12 @@ recipe-specs:
     tag: master
     recipe-subdir: conda-recipe
 
+  - name: neuprint-python
+    recipe-repo: https://github.com/connectome-neuprint/neuprint-python
+    tag: master
+    recipe-subdir: conda-recipe
+    conda-build-flags: --no-test    
+
   - name: dvid-resource-manager
     recipe-repo: https://github.com/janelia-flyem/DVIDResourceManager
     tag: master
