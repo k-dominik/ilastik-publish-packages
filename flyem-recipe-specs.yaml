@@ -41,6 +41,7 @@ recipe-specs:
     recipe-repo: https://github.com/stuarteberg/confiddler
     tag: master
     recipe-subdir: conda-recipe
+    conda-build-flags: --no-test
 
   - name: quilted
     recipe-repo: https://github.com/stuarteberg/quilted
