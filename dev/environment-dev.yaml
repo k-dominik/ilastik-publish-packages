@@ -8,4 +8,5 @@ dependencies:
   - conda-build
   - pre_commit
   - pytest
+  - pytest-mock
   - yaml

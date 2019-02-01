@@ -482,10 +482,10 @@ def upload_package(
     pkg_file_name = f"{package_name}-{recipe_version}-{recipe_build_string}.tar.bz2"
     BUILD_PKG_DIR = conda_bld_config.build_folder
     CONDA_PLATFORM = f"{conda_bld_config.platform}-{conda_bld_config.arch}"
-    pkg_file_path = BUILD_PKG_DIR / CONDA_PLATFORM / pkg_file_name
+    pkg_file_path = os.path.join(BUILD_PKG_DIR, CONDA_PLATFORM, pkg_file_name)
     if not os.path.exists(pkg_file_path):
         # Maybe it's a noarch package?
-        pkg_file_path = BUILD_PKG_DIR / "noarch" / pkg_file_name
+        pkg_file_path = os.path.join(BUILD_PKG_DIR, "noarch", pkg_file_name)
     if not os.path.exists(pkg_file_path):
         raise RuntimeError(f"Can't find built package: {pkg_file_name}")
 
