@@ -12,7 +12,7 @@ setup(
     package_dir={"": "src"},
     packages=find_packages("./src"),
     include_package_data=True,
-    install_requires=["pyyaml", "argcomplete"],
+    install_requires=["argcomplete", "conda-build", "pyyaml"],
     entry_points={
         "console_scripts": ["publish-conda-stack = publish_conda_stack.__main__:main"]
     },

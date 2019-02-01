@@ -5,6 +5,7 @@ channels:
 dependencies:
   - black
   - bumpversion
+  - conda-build
   - pre_commit
   - pytest
   - yaml
