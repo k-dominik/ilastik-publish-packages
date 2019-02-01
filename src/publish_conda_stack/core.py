@@ -1,17 +1,16 @@
 #!/usr/bin/env python
 # PYTHON_ARGCOMPLETE_OK
-import os
 from os.path import basename, splitext, abspath, exists, dirname, normpath
 from pathlib import Path
-import sys
 import argparse
-import subprocess
-import platform
+import datetime
 import json
+import os
+import platform
+import subprocess
+import sys
 import tempfile
 import yaml
-import textwrap
-import datetime
 
 try:
     import argcomplete
@@ -36,16 +35,12 @@ def parse_cmdline_args():
     """
     Parse the user's command-lines, with support for tab-completion.
     """
-    bashrc = "~/.bashrc"
-    if os.path.exists(os.path.expanduser("~/.bash_profile")):
-        bashrc = "~/.bash_profile"
-
     prog_name = sys.argv[0]
     if prog_name[0] not in (".", "/"):
         prog_name = "./" + prog_name
 
     parser = argparse.ArgumentParser(
-        epilog=help_epilog, formatter_class=argparse.RawDescriptionHelpFormatter
+        formatter_class=argparse.RawDescriptionHelpFormatter
     )
     parser.add_argument(
         "-l",
