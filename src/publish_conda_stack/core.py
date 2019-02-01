@@ -6,21 +6,26 @@ import argparse
 import conda_build.api
 import datetime
 import json
+import logging
 import os
-import platform
 import subprocess
 import sys
 import tempfile
 import yaml
+
+
+logger = logging.getLogger()
+logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.INFO)
 
 try:
     import argcomplete
     from argcomplete.completers import FilesCompleter
 
     ENABLE_TAB_COMPLETION = True
-except:
+except Exception as e:
     # See --help text for instructions.
     ENABLE_TAB_COMPLETION = False
+    logger.debug(f"Tab completion not available: {e}")
 
 
 # Disable git pager for log messages, etc.
@@ -156,7 +161,9 @@ def main():
 def print_recipe_list(recipe_specs):
     max_name = max(len(spec["name"]) for spec in recipe_specs)
     for spec in recipe_specs:
-        print(f"{spec['name']: <{max_name}} : {spec['recipe-repo']} ({spec['tag']})")
+        logger.info(
+            f"{spec['name']: <{max_name}} : {spec['recipe-repo']} ({spec['tag']})"
+        )
 
 
 def get_selected_specs(args, full_recipe_specs):
@@ -199,10 +206,10 @@ def get_selected_specs(args, full_recipe_specs):
     )
     filtered_names = [spec["name"] for spec in filtered_specs]
     if filtered_names != args.selected_recipes:
-        print(
+        logger.info(
             f"WARNING: Your recipe list was not given in the same order as in {args.recipe_specs_path}."
         )
-        print(
+        logger.info(
             f"         They will be processed in the following order: {', '.join(filtered_names)}"
         )
 
@@ -239,8 +246,8 @@ def build_and_upload_recipe(
     recipe_subdir = recipe_spec["recipe-subdir"]
     conda_build_flags = recipe_spec.get("conda-build-flags", "")
 
-    print("-------------------------------------------")
-    print(f"Processing {package_name}")
+    logger.info("-------------------------------------------")
+    logger.info(f"Processing {package_name}")
 
     # check whether we need to build the package on this OS at all
     if "build-on" in recipe_spec:
@@ -253,7 +260,7 @@ def build_and_upload_recipe(
     PLATFORM_STR = conda_bld_config.platform
 
     if PLATFORM_STR not in platforms_to_build_on:
-        print(
+        logger.info(
             f"Not building {package_name} on platform {PLATFORM_STR}, only builds on {platforms_to_build_on}"
         )
         return {}
@@ -275,7 +282,9 @@ def build_and_upload_recipe(
     recipe_version, recipe_build_string = get_rendered_version(
         package_name, recipe_subdir, build_environment, shared_config, variant_config
     )
-    print(f"Recipe version is: {package_name}-{recipe_version}-{recipe_build_string}")
+    logger.info(
+        f"Recipe version is: {package_name}-{recipe_version}-{recipe_build_string}"
+    )
 
     # Check our channel.  Did we already upload this version?
     package_info = {
@@ -286,7 +295,7 @@ def build_and_upload_recipe(
     if check_already_exists(
         package_name, recipe_version, recipe_build_string, shared_config
     ):
-        print(
+        logger.info(
             f"Found {package_name}-{recipe_version}-{recipe_build_string} on {shared_config['destination-channel']}, skipping build."
         )
         ret_dict = {"found": package_info}
@@ -353,7 +362,7 @@ def checkout_recipe_repo(recipe_repo, tag):
 
             subprocess.check_call(f"git fetch {remote_name}", shell=True)
 
-        print(f"Checking out {tag} of {repo_name} into {cwd}...")
+        logger.info(f"Checking out {tag} of {repo_name} into {cwd}...")
         subprocess.check_call(f"git checkout {tag}", shell=True)
         subprocess.check_call(f"git pull --ff-only {remote_name} {tag}", shell=True)
         subprocess.check_call(f"git submodule update --init --recursive", shell=True)
@@ -363,8 +372,8 @@ def checkout_recipe_repo(recipe_repo, tag):
             "Double-check the repo url, or delete your repo cache and try again."
         )
 
-    print(f"Recipe checked out at tag: {tag}")
-    print("Most recent commit:")
+    logger.info(f"Recipe checked out at tag: {tag}")
+    logger.info("Most recent commit:")
     subprocess.call("git log -n1", shell=True)
     os.chdir(cwd)
 
@@ -381,7 +390,7 @@ def get_rendered_version(
     Returns
         tuple: recipe_version, recipe_build_string
     """
-    print(f"Rendering recipe in {recipe_subdir}...")
+    logger.info(f"Rendering recipe in {recipe_subdir}...")
     temp_meta_file = tempfile.NamedTemporaryFile(delete=False)
     temp_meta_file.close()
     render_cmd = (
@@ -391,7 +400,7 @@ def get_rendered_version(
         f" {shared_config['source-channel-string']}"
         f" --file {temp_meta_file.name}"
     )
-    print("\t" + render_cmd)
+    logger.info("\t" + render_cmd)
     rendered_meta_text = subprocess.check_output(
         render_cmd, env=build_environment, shell=True
     ).decode()
@@ -419,9 +428,9 @@ def check_already_exists(
     Check if the given package already exists on anaconda.org in the
     ilastik-forge channel with the given version and build string.
     """
-    print(f"Searching channel: {shared_config['destination-channel']}")
+    logger.info(f"Searching channel: {shared_config['destination-channel']}")
     search_cmd = f"conda search --json  --full-name --override-channels --channel={shared_config['destination-channel']} {package_name}"
-    print("\t" + search_cmd)
+    logger.info("\t" + search_cmd)
     try:
         search_results_text = subprocess.check_output(search_cmd, shell=True).decode()
     except Exception:
@@ -439,7 +448,7 @@ def check_already_exists(
             result["build"] == recipe_build_string
             and result["version"] == recipe_version
         ):
-            print("Found package!")
+            logger.info("Found package!")
             return True
     return False
 
@@ -455,14 +464,14 @@ def build_recipe(
     """
     Build the recipe.
     """
-    print(f"Building {package_name}")
+    logger.info(f"Building {package_name}")
     build_cmd = (
         f"conda build {build_flags}"
         f" -m {variant_config}"
         f" {shared_config['source-channel-string']}"
         f" {recipe_subdir}"
     )
-    print("\t" + build_cmd)
+    logger.info("\t" + build_cmd)
     try:
         subprocess.check_call(build_cmd, env=build_environment, shell=True)
     except subprocess.CalledProcessError as ex:
@@ -492,8 +501,8 @@ def upload_package(
     upload_cmd = (
         f"anaconda upload -u {shared_config['destination-channel']} {pkg_file_path}"
     )
-    print(f"Uploading {pkg_file_name}")
-    print(upload_cmd)
+    logger.info(f"Uploading {pkg_file_name}")
+    logger.info(upload_cmd)
     subprocess.check_call(upload_cmd, shell=True)
 
 
