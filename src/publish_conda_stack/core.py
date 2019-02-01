@@ -3,6 +3,7 @@
 from os.path import basename, splitext, abspath, exists, dirname, normpath
 from pathlib import Path
 import argparse
+import conda_build.api
 import datetime
 import json
 import os
@@ -21,11 +22,6 @@ except:
     # See --help text for instructions.
     ENABLE_TAB_COMPLETION = False
 
-
-# See _init_globals(), below
-CONDA_PLATFORM = None
-PLATFORM_STR = None
-BUILD_PKG_DIR = None
 
 # Disable git pager for log messages, etc.
 os.environ["GIT_PAGER"] = ""
@@ -82,7 +78,7 @@ def parse_cmdline_args():
 def main():
     start_time = datetime.datetime.now()
     args = parse_cmdline_args()
-    _init_globals()
+    conda_bld_config = conda_build.api.get_or_merge_config(conda_build.api.Config())
 
     specs_file_contents = yaml.load(open(args.recipe_specs_path, "r"))
 
@@ -136,7 +132,9 @@ def main():
         script_path, f"{start_time.strftime('%Y%m%d-%H%M%S')}_build_out.yaml"
     )
     for spec in selected_recipe_specs:
-        status = build_and_upload_recipe(spec, shared_config, pin_specs_path)
+        status = build_and_upload_recipe(
+            spec, shared_config, pin_specs_path, conda_bld_config
+        )
         for k, v in status.items():
             result[k].append(v)
         with open(result_file, "w") as f:
@@ -153,28 +151,6 @@ def main():
     print("--------")
     print("Summary:")
     print(yaml.dump(result, default_flow_style=False))
-
-
-def _init_globals():
-    """
-    We initialize globals in this function, AFTER argcomplete is used.
-    (Using subprocess interferes with argcomplete.)
-    """
-    global CONDA_PLATFORM
-    global BUILD_PKG_DIR
-    global PLATFORM_STR
-
-    CONDA_PLATFORM = {"Darwin": "osx-64", "Linux": "linux-64", "Windows": "win-64"}[
-        platform.system()
-    ]
-    PLATFORM_STR = CONDA_PLATFORM.replace("-64", "")
-
-    # There's probably some proper way to obtain BUILD_PKG_DIR
-    # via the conda.config python API, but I can't figure it out.
-    CONDA_ROOT = Path(
-        subprocess.check_output("conda info --root", shell=True).rstrip().decode()
-    )
-    BUILD_PKG_DIR = CONDA_ROOT / "conda-bld"
 
 
 def print_recipe_list(recipe_specs):
@@ -233,7 +209,9 @@ def get_selected_specs(args, full_recipe_specs):
     return filtered_specs
 
 
-def build_and_upload_recipe(recipe_spec, shared_config, variant_config):
+def build_and_upload_recipe(
+    recipe_spec, shared_config, variant_config, conda_bld_config: conda_build.api.Config
+):
     """
     Given a recipe-spec dictionary, build and upload the recipe if
     it doesn't already exist on ilastik-forge.
@@ -271,6 +249,8 @@ def build_and_upload_recipe(recipe_spec, shared_config, variant_config):
         assert all(o in ["win", "osx", "linux"] for o in platforms_to_build_on)
     else:
         platforms_to_build_on = ["win", "osx", "linux"]
+
+    PLATFORM_STR = conda_bld_config.platform
 
     if PLATFORM_STR not in platforms_to_build_on:
         print(
@@ -320,7 +300,13 @@ def build_and_upload_recipe(recipe_spec, shared_config, variant_config):
             shared_config,
             variant_config,
         )
-        upload_package(package_name, recipe_version, recipe_build_string, shared_config)
+        upload_package(
+            package_name,
+            recipe_version,
+            recipe_build_string,
+            shared_config,
+            conda_bld_config,
+        )
         ret_dict = {"built": package_info}
     return ret_dict
 
@@ -483,12 +469,19 @@ def build_recipe(
         sys.exit(f"Failed to build package: {package_name}")
 
 
-def upload_package(package_name, recipe_version, recipe_build_string, shared_config):
+def upload_package(
+    package_name,
+    recipe_version,
+    recipe_build_string,
+    shared_config,
+    conda_bld_config: conda_build.api.Config,
+):
     """
     Upload the package to the ilastik-forge channel.
     """
     pkg_file_name = f"{package_name}-{recipe_version}-{recipe_build_string}.tar.bz2"
-
+    BUILD_PKG_DIR = conda_bld_config.build_folder
+    CONDA_PLATFORM = f"{conda_bld_config.platform}-{conda_bld_config.arch}"
     pkg_file_path = BUILD_PKG_DIR / CONDA_PLATFORM / pkg_file_name
     if not os.path.exists(pkg_file_path):
         # Maybe it's a noarch package?
