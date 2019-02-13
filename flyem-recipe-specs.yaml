@@ -4,7 +4,7 @@ shared-config:
   repo-cache-dir: ./repo-cache # Relative to this yaml file's directory.
   source-channels:
     - flyem-forge
-    - conda-forge
+    - conda-forge/label/cf201901 # conda-forge's old stack, pre-gcc7
   destination-channel: flyem-forge
 
 recipe-specs:
