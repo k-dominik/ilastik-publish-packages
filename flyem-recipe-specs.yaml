@@ -27,15 +27,16 @@ recipe-specs:
     tag: master
     recipe-subdir: jansson
 
-  - name: lz4
-    recipe-repo: https://github.com/janelia-flyem/flyem-conda-recipes
-    tag: master
-    recipe-subdir: lz4
-
-  - name: python-lz4
-    recipe-repo: https://github.com/janelia-flyem/flyem-conda-recipes
-    tag: master
-    recipe-subdir: python-lz4
+# We don't build our own lz4 any more; we use conda-forge
+#  - name: lz4
+#    recipe-repo: https://github.com/janelia-flyem/flyem-conda-recipes
+#    tag: master
+#    recipe-subdir: lz4
+#
+#  - name: python-lz4
+#    recipe-repo: https://github.com/janelia-flyem/flyem-conda-recipes
+#    tag: master
+#    recipe-subdir: python-lz4
 
   - name: confiddler
     recipe-repo: https://github.com/stuarteberg/confiddler
@@ -213,6 +214,13 @@ recipe-specs:
     tag: master
     recipe-subdir: conda-recipe
     conda-build-flags: --no-test
+
+  - name: flyemflows
+    recipe-repo: https://github.com/stuarteberg/flyemflows
+    tag: master
+    recipe-subdir: conda-recipe
+    conda-build-flags: --no-test
+
 
 ## FIXME: Our recipe for google-api-client hasn't been updated yet.
 #  - name: google-api-client
